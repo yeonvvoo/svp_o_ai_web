@@ -12,9 +12,10 @@
     <style>
         /* 🔮 기본 컨셉 및 배경 디자인 */
         :root {
-            --deep-purple: #130624;
-            --tarot-purple: #23123a;
-            --gold: #d4af37;
+            --deep-purple: #0a0014;
+            --tarot-purple: #1a0b2e;
+            --gold: #f2c94c;
+            --gold-dark: #b38f2d;
             --white-ivory: #fdfaf1;
             --mystical-blue: #5c9eff;
         }
@@ -25,7 +26,9 @@
         }
 
         body {
-            background-color: var(--deep-purple);
+            /* 화려한 보라색, 검정색 그라데이션 배경 */
+            background: linear-gradient(135deg, #000000 0%, #1a0b2e 40%, #3d1b63 100%);
+            background-attachment: fixed;
             color: var(--white-ivory);
             font-family: 'Noto Serif KR', serif;
             margin: 0;
@@ -35,10 +38,23 @@
             padding: 0;
         }
 
+        /* 우주/먼지 같은 마법적 효과를 주기 위한 오버레이 */
+        body::before {
+            content: "";
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background-image: radial-gradient(circle, rgba(255,255,255,0.03) 1px, transparent 1px);
+            background-size: 20px 20px;
+            pointer-events: none;
+            z-index: 0;
+        }
+
         .main-wrapper {
             max-width: 600px;
             width: 100%;
             padding: 30px 15px;
+            position: relative;
+            z-index: 1;
         }
 
         header {
@@ -49,18 +65,19 @@
 
         header h1 {
             font-family: 'Playfair Display', serif;
-            font-size: 42px;
+            font-size: 46px;
             color: var(--gold);
             margin: 0;
-            letter-spacing: 4px;
-            text-shadow: 0 0 15px rgba(212, 175, 55, 0.6);
+            letter-spacing: 5px;
+            text-shadow: 0 0 25px rgba(242, 201, 76, 0.8), 0 0 50px rgba(139, 92, 246, 0.9);
         }
 
         header p {
-            font-size: 14px;
-            color: rgba(253, 250, 241, 0.7);
-            margin-top: 8px;
-            letter-spacing: 1px;
+            font-size: 15px;
+            color: rgba(253, 250, 241, 0.8);
+            margin-top: 10px;
+            letter-spacing: 1.5px;
+            font-weight: 300;
         }
 
         /* 🌙 선택 옵션 가로 스크롤 레이아웃 */
@@ -69,48 +86,50 @@
         }
 
         .filter-label {
-            font-size: 14px;
+            font-size: 15px;
             color: var(--gold);
-            margin-bottom: 10px;
+            margin-bottom: 12px;
             display: flex;
             align-items: center;
             gap: 8px;
             font-weight: 700;
+            text-shadow: 0 2px 4px rgba(0,0,0,0.8);
         }
 
         .scroll-container {
             display: flex;
-            gap: 10px;
+            gap: 12px;
             overflow-x: auto;
-            padding: 5px 2px 12px;
-            scrollbar-width: none; /* Firefox */
-            -ms-overflow-style: none;  /* IE and Edge */
+            padding: 5px 5px 15px 5px;
+            scrollbar-width: none;
+            -ms-overflow-style: none;
         }
 
         .scroll-container::-webkit-scrollbar {
-            display: none; /* Chrome, Safari */
+            display: none;
         }
 
         .tarot-chip {
             flex-shrink: 0;
-            background: rgba(35, 18, 58, 0.8);
-            border: 1px solid rgba(212, 175, 55, 0.4);
-            padding: 10px 18px;
-            border-radius: 25px;
-            font-size: 13px;
+            background: rgba(20, 10, 40, 0.7);
+            backdrop-filter: blur(8px);
+            border: 1px solid rgba(242, 201, 76, 0.4);
+            padding: 10px 20px;
+            border-radius: 30px;
+            font-size: 14px;
             cursor: pointer;
-            transition: all 0.25s ease;
-            color: rgba(253, 250, 241, 0.8);
-            box-shadow: 0 4px 8px rgba(0,0,0,0.4);
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            color: rgba(253, 250, 241, 0.9);
+            box-shadow: 0 4px 10px rgba(0,0,0,0.5);
         }
 
         .tarot-chip.active {
-            background: var(--gold);
-            color: var(--deep-purple);
+            background: linear-gradient(135deg, var(--gold), #d4af37);
+            color: #110022;
             font-weight: 700;
             border-color: var(--gold);
-            transform: translateY(-2px);
-            box-shadow: 0 0 12px rgba(212, 175, 55, 0.5);
+            transform: translateY(-3px) scale(1.05);
+            box-shadow: 0 8px 20px rgba(242, 201, 76, 0.6);
         }
 
         /* ⚖️ 정렬 필터 */
@@ -122,12 +141,12 @@
         }
 
         .sort-btn {
-            background: rgba(253, 250, 241, 0.05);
+            background: rgba(0, 0, 0, 0.4);
             border: 1px solid rgba(253, 250, 241, 0.2);
-            color: rgba(253, 250, 241, 0.6);
+            color: rgba(253, 250, 241, 0.7);
             padding: 8px 16px;
             border-radius: 20px;
-            font-size: 12px;
+            font-size: 13px;
             cursor: pointer;
             transition: all 0.2s;
             font-weight: 500;
@@ -136,46 +155,49 @@
         .sort-btn.active {
             border-color: var(--mystical-blue);
             color: var(--mystical-blue);
-            background: rgba(92, 158, 255, 0.1);
+            background: rgba(92, 158, 255, 0.15);
+            box-shadow: 0 0 15px rgba(92, 158, 255, 0.4);
         }
 
         /* 🔮 버튼 애니메이션 */
         .reveal-btn {
             width: 100%;
             padding: 18px;
-            background: linear-gradient(135deg, var(--gold), #b38f2d);
+            background: linear-gradient(135deg, #f2c94c, #b38f2d);
             border: none;
-            border-radius: 12px;
-            color: var(--deep-purple);
+            border-radius: 15px;
+            color: #110022;
             font-size: 18px;
-            font-weight: 700;
+            font-weight: 800;
             cursor: pointer;
             margin-bottom: 30px;
-            box-shadow: 0 5px 15px rgba(212, 175, 55, 0.3);
+            box-shadow: 0 5px 25px rgba(242, 201, 76, 0.6);
             font-family: 'Noto Serif KR', serif;
             transition: all 0.2s;
+            text-transform: uppercase;
+            letter-spacing: 2px;
         }
 
         .reveal-btn:active {
-            transform: scale(0.98);
-            box-shadow: 0 2px 8px rgba(212, 175, 55, 0.2);
+            transform: scale(0.97);
+            box-shadow: 0 2px 10px rgba(242, 201, 76, 0.3);
         }
 
         /* 🃏 결과 타로 카드 */
         .result-container {
             display: grid;
             grid-template-columns: 1fr;
-            gap: 20px;
+            gap: 24px;
         }
 
         .tarot-card {
-            background: var(--tarot-purple);
-            border: 2px solid var(--gold);
-            border-radius: 15px;
-            padding: 22px;
+            background: linear-gradient(145deg, #2a1645, #110522);
+            border: 2px solid var(--gold-dark);
+            border-radius: 16px;
+            padding: 24px;
             position: relative;
             overflow: hidden;
-            box-shadow: 0 8px 25px rgba(0,0,0,0.6);
+            box-shadow: 0 10px 40px rgba(0,0,0,0.9), inset 0 0 25px rgba(139, 92, 246, 0.2);
             transition: all 0.3s ease;
             cursor: pointer;
         }
@@ -188,89 +210,103 @@
         .tarot-card::before {
             content: '';
             position: absolute;
-            top: 8px; left: 8px; right: 8px; bottom: 8px;
-            border: 1px solid rgba(212, 175, 55, 0.2);
+            top: 10px; left: 10px; right: 10px; bottom: 10px;
+            border: 1px solid rgba(242, 201, 76, 0.25);
             pointer-events: none;
-            border-radius: 10px;
+            border-radius: 12px;
         }
 
         .card-rank {
             position: absolute;
-            top: 15px;
+            top: 18px;
             left: 20px;
             font-family: 'Playfair Display', serif;
-            font-size: 22px;
+            font-size: 24px;
             color: var(--gold);
             font-weight: 700;
+            text-shadow: 0 2px 4px rgba(0,0,0,0.8);
         }
 
         .card-header {
             text-align: center;
-            margin-bottom: 18px;
-            padding-top: 10px;
+            margin-bottom: 20px;
+            padding-top: 12px;
         }
 
         .restaurant-name {
-            font-size: 22px;
+            font-size: 24px;
             font-weight: 700;
             color: var(--white-ivory);
-            margin-bottom: 6px;
+            margin-bottom: 8px;
+            text-shadow: 0 2px 5px rgba(0,0,0,0.8);
+        }
+
+        .restaurant-menu {
+            font-size: 15px;
+            color: #d1c4e9;
+            margin-bottom: 8px;
         }
 
         .restaurant-rating {
             color: var(--gold);
-            font-size: 16px;
+            font-size: 18px;
             font-weight: 700;
+            letter-spacing: 1px;
         }
 
         .card-details {
             display: grid;
             grid-template-columns: 1fr 1fr;
-            gap: 12px;
-            font-size: 13px;
-            color: rgba(253, 250, 241, 0.85);
-            background: rgba(0, 0, 0, 0.2);
-            padding: 12px;
-            border-radius: 8px;
-            border: 0.5px solid rgba(212, 175, 55, 0.15);
+            gap: 15px;
+            font-size: 13.5px;
+            color: rgba(253, 250, 241, 0.95);
+            background: rgba(0, 0, 0, 0.4);
+            padding: 16px;
+            border-radius: 10px;
+            border: 1px solid rgba(242, 201, 76, 0.15);
         }
 
         .detail-item {
             display: flex;
             align-items: center;
-            gap: 6px;
+            gap: 8px;
         }
 
         .detail-item i {
             color: var(--gold);
-            width: 14px;
+            width: 16px;
             text-align: center;
         }
 
         .card-footer {
-            margin-top: 18px;
+            margin-top: 20px;
             display: flex;
             justify-content: center;
-            gap: 6px;
+            gap: 8px;
             flex-wrap: wrap;
         }
 
         .tag {
-            background: rgba(212, 175, 55, 0.1);
+            background: rgba(242, 201, 76, 0.15);
             color: var(--gold);
-            padding: 4px 10px;
-            border-radius: 4px;
-            font-size: 11px;
-            border: 0.5px solid rgba(212, 175, 55, 0.25);
+            padding: 5px 12px;
+            border-radius: 6px;
+            font-size: 12px;
+            font-weight: 700;
+            border: 1px solid rgba(242, 201, 76, 0.4);
+            box-shadow: 0 2px 5px rgba(0,0,0,0.3);
         }
 
         .empty-msg {
             text-align: center;
-            color: rgba(253, 250, 241, 0.4);
-            padding: 50px 20px;
+            color: rgba(253, 250, 241, 0.6);
+            padding: 60px 20px;
             font-style: italic;
-            font-size: 14px;
+            font-size: 15px;
             line-height: 1.6;
+            background: rgba(0,0,0,0.5);
+            border-radius: 15px;
+            border: 1px dashed rgba(253, 250, 241, 0.3);
         }
     </style>
 </head>
@@ -285,11 +321,10 @@
     <div class="filter-section">
         <div class="filter-label"><i class="fa-solid fa-moon"></i> 방문 목적</div>
         <div class="scroll-container" id="purpose-scroll">
-            <div class="tarot-chip active" data-val="all">🔮 전체목적</div>
-            <div class="tarot-chip" data-val="데이트">❤️ 데이트</div>
-            <div class="tarot-chip" data-val="가족식사">👨‍👩‍👧 가족식사</div>
-            <div class="tarot-chip" data-val="회식">🍺 회식</div>
-            <div class="tarot-chip" data-val="빠른식사">⚡ 빠른식사</div>
+            <div class="tarot-chip active" data-val="all">🔮 전체</div>
+            <div class="tarot-chip" data-val="친목">👥 친목</div>
+            <div class="tarot-chip" data-val="회식">🍻 회식</div>
+            <div class="tarot-chip" data-val="미팅">🤝 미팅</div>
             <div class="tarot-chip" data-val="혼밥">👤 혼밥</div>
         </div>
     </div>
@@ -297,109 +332,55 @@
     <div class="filter-section">
         <div class="filter-label"><i class="fa-solid fa-wand-magic-sparkles"></i> 메뉴 카테고리</div>
         <div class="scroll-container" id="category-scroll">
-            <div class="tarot-chip active" data-val="all">✨ 전체메뉴</div>
-            <div class="tarot-chip" data-val="한식">🍚 한식</div>
-            <div class="tarot-chip" data-val="양식">🍝 양식</div>
-            <div class="tarot-chip" data-val="중식">🐼 중식</div>
-            <div class="tarot-chip" data-val="일식">🍣 일식</div>
+            <div class="tarot-chip active" data-val="all">✨ 전체</div>
             <div class="tarot-chip" data-val="분식">떡 분식</div>
-            <div class="tarot-chip" data-val="패스트푸드">🍔 패스트푸드</div>
+            <div class="tarot-chip" data-val="일식">🍣 일식</div>
+            <div class="tarot-chip" data-val="중식">🐼 중식</div>
+            <div class="tarot-chip" data-val="한식">🍚 한식</div>
+            <div class="tarot-chip" data-val="베트남식">🍜 베트남식</div>
             <div class="tarot-chip" data-val="샐러드">🥗 샐러드</div>
+            <div class="tarot-chip" data-val="양식">🍝 양식</div>
         </div>
     </div>
 
     <div class="filter-section">
         <div class="filter-label"><i class="fa-solid fa-users"></i> 방문 인원</div>
         <div class="scroll-container" id="people-scroll">
-            <div class="tarot-chip active" data-val="all">👥 전체인원</div>
-            <div class="tarot-chip" data-val="1">1인 혼밥</div>
-            <div class="tarot-chip" data-val="2">2인 식사</div>
-            <div class="tarot-chip" data-val="3">3~4인</div>
-            <div class="tarot-chip" data-val="5">5인 단체</div>
+            <div class="tarot-chip active" data-val="all">전체</div>
+            <div class="tarot-chip" data-val="1-2">1-2인</div>
+            <div class="tarot-chip" data-val="2-3">2-3인</div>
+            <div class="tarot-chip" data-val="3-4">3-4인</div>
+            <div class="tarot-chip" data-val="5-6">5-6인</div>
+            <div class="tarot-chip" data-val="6over">6인 이상</div>
         </div>
     </div>
 
     <div class="filter-section">
         <div class="filter-label"><i class="fa-solid fa-coins"></i> 가격대 (1인)</div>
         <div class="scroll-container" id="price-scroll">
-            <div class="tarot-chip active" data-val="all">💰 전체가격</div>
-            <div class="tarot-chip" data-val="10000">1만원 이하</div>
-            <div class="tarot-chip" data-val="15000">1~1.5만원</div>
-            <div class="tarot-chip" data-val="20000">1.5~2만원</div>
-            <div class="tarot-chip" data-val="over">2만원 이상</div>
+            <div class="tarot-chip active" data-val="all">전체</div>
+            <div class="tarot-chip" data-val="under7">7천원 미만</div>
+            <div class="tarot-chip" data-val="7to10">7천원~1만원</div>
+            <div class="tarot-chip" data-val="10to13">1만~1.3만원</div>
+            <div class="tarot-chip" data-val="13to16">1.3만~1.6만원</div>
+            <div class="tarot-chip" data-val="over16">1.6만원 이상</div>
         </div>
     </div>
 
     <button class="reveal-btn" onclick="revealFortune()">🔮 오늘의 점심운세 점치기</button>
 
     <div class="sort-section">
-        <div class="sort-btn active" data-sort="rating">⭐ 평점 높은순</div>
-        <div class="sort-btn" data-sort="distance">🚶 거리 가까운순</div>
-        <div class="sort-btn" data-sort="waiting">⏳ 대기시간 적은순</div>
+        <div class="sort-btn" data-sort="distance">🚶 거리순</div>
+        <div class="sort-btn active" data-sort="rating">⭐ 평점순</div>
+        <div class="sort-btn" data-sort="waiting">⏳ 대기적은순</div>
     </div>
 
     <div class="result-container" id="result-area"></div>
 </div>
 
 <script>
-    // 식당 명칭 조합 풀
-    const baseNames = {
-        '한식': ['명동 한정식', '전주 가마솥밥', '할매 가마솥국밥', '서울 삼겹살', '진미 식당', '청진동 해장국', '바른 백반집', '수라상 한정식'],
-        '양식': ['비스트로 나폴리', '로마 파스타하우스', '루프탑 스테이크', '이탈리안 플레이트', '오븐스토리', '에이프릴 키친'],
-        '중식': ['만다린 대반점', '북경장 짜장점', '홍콩 로컬반점', '동보성 룸식당', '취영루 짬뽕전문', '천안문 코스요리'],
-        '일식': ['도쿄 스시바', '오사카 수제우동', '미야꼬 돈카츠', '스시로 오마카세', '사쿠라식당', '이자카야 텐'],
-        '분식': ['국민 떡볶이', '청춘 김밥마을', '매콤달콤 즉석분식', '튀김명가 대박집', '학교앞 추억분식'],
-        '패스트푸드': ['버거킹덤 수제버거', '맥버거 크리스피', '골든 버거스튜디오', '탑 바베큐치킨', '프라이데이 치킨'],
-        '샐러드': ['프레시 포케하우스', '그린보울 건강한끼', '샐러드파크 비건테이블', '포케 라이프스타일', '그린 에브리데이']
-    };
-
-    // 300건의 데이터 자동 생성 (사용자 원본 데이터의 분포 및 특성 100% 반영)
-    const rawData = [];
-    const categories = ['한식', '양식', '중식', '일식', '분식', '패스트푸드', '샐러드'];
-    
-    // 데이터 분포 고정 시드 형태의 루프 (300건 생성)
-    for(let i = 0; i < 300; i++) {
-        const cat = categories[i % categories.length];
-        
-        // 현실적인 원본 데이터 범위 가공
-        const price = 6500 + ((i * 47) % 23) * 500; // 6500원 ~ 17500원 균등 분포
-        const rating = parseFloat((3.5 + ((i * 13) % 16) * 0.1).toFixed(1)); // 3.5 ~ 5.0
-        const distance = 80 + ((i * 73) % 113) * 8; // 80m ~ 976m
-        const people = (i % 4) + 1; // 1~4인 기본값 분포 설정
-        
-        // 특정 데이터들은 5인 이상 단체 수용 가능하도록 보정 처리 (이전 피드백 반영)
-        let customPeople = people;
-        if (i % 6 === 0) {
-            customPeople = Math.floor(Math.random() * 6) + 5; // 5~10인 단체석 설정
-        }
-
-        const waiting = 5 + ((i * 29) % 9) * 5; // 5분 ~ 45분 웨이팅 시간
-        
-        // 목적(태그) 자동 매핑 알고리즘
-        let purposes = ["친목"];
-        if(customPeople >= 3) purposes.push("회식", "가족식사");
-        if(rating >= 4.3 && customPeople <= 2) purposes.push("데이트");
-        if(waiting <= 15) purposes.push("빠른식사");
-        if(customPeople === 1) purposes.push("혼밥");
-
-        // 이름 가져오기
-        const pool = baseNames[cat];
-        const nameIdx = (i + 3) % pool.length;
-        const branchNum = (i % 7) + 1;
-        const resName = `${pool[nameIdx]} ${branchNum}호점`;
-
-        rawData.push({
-            id: i + 1,
-            name: resName,
-            category: cat,
-            price: price,
-            rating: rating,
-            distance: distance,
-            people: customPeople,
-            waiting: waiting,
-            purpose: [...new Set(purposes)]
-        });
-    }
+    // 💡 실제 업로드된 최종 CSV 데이터 (300건)
+    const rawData = [{"name": "푸른 김밥다이닝", "menu": "김밥", "category": "분식", "price": 5000, "capacity": 80, "waiting": 10, "distance": 501, "rating": 4.9, "spicy": 0, "purpose": ["혼밥", "친목"]}, {"name": "소담 초밥다이닝", "menu": "초밥", "category": "일식", "price": 18000, "capacity": 20, "waiting": 30, "distance": 928, "rating": 4.7, "spicy": 0, "purpose": ["혼밥"]}, {"name": "온기 짜장부엌", "menu": "짜장면", "category": "중식", "price": 8500, "capacity": 20, "waiting": 7, "distance": 917, "rating": 4.4, "spicy": 0, "purpose": ["혼밥", "친목"]}, {"name": "오늘 떡볶스토리", "menu": "떡볶이", "category": "분식", "price": 7000, "capacity": 24, "waiting": 10, "distance": 1042, "rating": 4.8, "spicy": 4, "purpose": ["혼밥", "친목"]}, {"name": "담백한 초밥포차", "menu": "초밥", "category": "일식", "price": 17000, "capacity": 40, "waiting": 6, "distance": 1098, "rating": 4.5, "spicy": 0, "purpose": ["친목", "미팅", "회식"]}, {"name": "온담 불고키친", "menu": "불고기", "category": "한식", "price": 14500, "capacity": 40, "waiting": 3, "distance": 261, "rating": 5.0, "spicy": 0, "purpose": ["친목", "미팅", "회식"]}, {"name": "별미 갈비플레이트", "menu": "갈비탕", "category": "한식", "price": 13000, "capacity": 80, "waiting": 13, "distance": 689, "rating": 4.8, "spicy": 0, "purpose": ["친목", "미팅", "회식"]}, {"name": "고운 쌀국식당", "menu": "쌀국수", "category": "베트남", "price": 11000, "capacity": 40, "waiting": 24, "distance": 765, "rating": 5.0, "spicy": 0, "purpose": ["친목", "회식"]}, {"name": "고운 제육랩", "menu": "제육볶음", "category": "한식", "price": 10000, "capacity": 20, "waiting": 5, "distance": 1118, "rating": 4.4, "spicy": 2, "purpose": ["혼밥", "친목"]}, {"name": "풍년 반미면옥", "menu": "반미", "category": "베트남", "price": 8000, "capacity": 16, "waiting": 13, "distance": 638, "rating": 4.1, "spicy": 1, "purpose": ["혼밥", "친목"]}, {"name": "정성 김밥하우스", "menu": "김밥", "category": "분식", "price": 6000, "capacity": 60, "waiting": 12, "distance": 128, "rating": 4.4, "spicy": 0, "purpose": ["혼밥", "친목"]}, {"name": "오월 카레코너", "menu": "카레", "category": "일식", "price": 12000, "capacity": 30, "waiting": 12, "distance": 651, "rating": 5.0, "spicy": 1, "purpose": ["친목", "미팅"]}, {"name": "오늘 카레면옥", "menu": "카레", "category": "일식", "price": 11000, "capacity": 60, "waiting": 28, "distance": 519, "rating": 4.1, "spicy": 1, "purpose": ["친목", "회식"]}, {"name": "고운 리조키친", "menu": "리조또", "category": "양식", "price": 15000, "capacity": 12, "waiting": 8, "distance": 732, "rating": 4.1, "spicy": 0, "purpose": ["혼밥", "친목"]}, {"name": "별미 마라테이블", "menu": "마라탕", "category": "중식", "price": 12000, "capacity": 20, "waiting": 9, "distance": 799, "rating": 3.8, "spicy": 5, "purpose": ["혼밥", "친목"]}, {"name": "온기 리조포차", "menu": "리조또", "category": "양식", "price": 16000, "capacity": 60, "waiting": 6, "distance": 476, "rating": 4.1, "spicy": 0, "purpose": ["회식"]}, {"name": "푸른 라멘플레이트", "menu": "라멘", "category": "일식", "price": 13000, "capacity": 20, "waiting": 5, "distance": 1105, "rating": 4.2, "spicy": 1, "purpose": ["혼밥", "친목"]}, {"name": "별미 쫄면랩", "menu": "쫄면", "category": "분식", "price": 9000, "capacity": 60, "waiting": 26, "distance": 75, "rating": 3.8, "spicy": 2, "purpose": ["혼밥"]}, {"name": "라온 불고비스트로", "menu": "불고기", "category": "한식", "price": 12000, "capacity": 16, "waiting": 30, "distance": 179, "rating": 4.1, "spicy": 0, "purpose": ["친목"]}, {"name": "소담 제육키친", "menu": "제육볶음", "category": "한식", "price": 10500, "capacity": 16, "waiting": 3, "distance": 864, "rating": 4.6, "spicy": 2, "purpose": ["혼밥", "친목"]}, {"name": "고운 치킨플레이트", "menu": "치킨샐러드", "category": "샐러드", "price": 12000, "capacity": 80, "waiting": 6, "distance": 485, "rating": 4.0, "spicy": 0, "purpose": ["혼밥"]}, {"name": "도담 짜장키친", "menu": "짜장면", "category": "중식", "price": 8000, "capacity": 40, "waiting": 15, "distance": 409, "rating": 4.5, "spicy": 0, "purpose": ["혼밥", "친목"]}, {"name": "오늘 파스비스트로", "menu": "파스타", "category": "양식", "price": 16000, "capacity": 24, "waiting": 25, "distance": 157, "rating": 4.5, "spicy": 0, "purpose": ["친목"]}, {"name": "온기 스테코너", "menu": "스테이크", "category": "양식", "price": 24500, "capacity": 20, "waiting": 17, "distance": 548, "rating": 4.9, "spicy": 0, "purpose": ["친목", "미팅"]}, {"name": "다온 연어코너", "menu": "연어샐러드", "category": "샐러드", "price": 14000, "capacity": 40, "waiting": 28, "distance": 74, "rating": 4.1, "spicy": 0, "purpose": ["혼밥"]}, {"name": "오월 순두스토리", "menu": "순두부찌개", "category": "한식", "price": 8500, "capacity": 20, "waiting": 18, "distance": 344, "rating": 4.3, "spicy": 2, "purpose": ["혼밥", "친목"]}, {"name": "담온 불고랩", "menu": "불고기", "category": "한식", "price": 12000, "capacity": 24, "waiting": 7, "distance": 632, "rating": 4.8, "spicy": 0, "purpose": ["혼밥", "친목", "미팅"]}, {"name": "온담 카레면옥", "menu": "카레", "category": "일식", "price": 10000, "capacity": 40, "waiting": 14, "distance": 210, "rating": 4.1, "spicy": 1, "purpose": ["친목", "회식"]}, {"name": "도담 피자테이블", "menu": "피자", "category": "양식", "price": 19500, "capacity": 24, "waiting": 17, "distance": 122, "rating": 4.8, "spicy": 0, "purpose": ["친목", "미팅"]}, {"name": "도담 탄탄부엌", "menu": "탄탄면", "category": "중식", "price": 11000, "capacity": 12, "waiting": 28, "distance": 491, "rating": 4.0, "spicy": 2, "purpose": ["친목"]}, {"name": "고운 파스가든", "menu": "파스타", "category": "양식", "price": 13000, "capacity": 12, "waiting": 22, "distance": 520, "rating": 4.9, "spicy": 0, "purpose": ["친목"]}, {"name": "푸른 쌀국하우스", "menu": "쌀국수", "category": "베트남", "price": 11000, "capacity": 40, "waiting": 19, "distance": 492, "rating": 3.9, "spicy": 0, "purpose": ["친목", "회식"]}, {"name": "온담 라멘코너", "menu": "라멘", "category": "일식", "price": 12000, "capacity": 30, "waiting": 5, "distance": 120, "rating": 3.9, "spicy": 1, "purpose": ["친목"]}, {"name": "한끼 짜조다이닝", "menu": "짜조", "category": "베트남", "price": 9000, "capacity": 16, "waiting": 13, "distance": 845, "rating": 4.6, "spicy": 0, "purpose": ["혼밥", "친목"]}, {"name": "미소 순대포차", "menu": "순대", "category": "분식", "price": 7000, "capacity": 40, "waiting": 30, "distance": 268, "rating": 4.8, "spicy": 1, "purpose": ["혼밥"]}, {"name": "하루 초밥코너", "menu": "초밥", "category": "일식", "price": 19500, "capacity": 60, "waiting": 28, "distance": 829, "rating": 4.5, "spicy": 0, "purpose": ["회식"]}, {"name": "골목 햄버코너", "menu": "햄버거", "category": "양식", "price": 10000, "capacity": 30, "waiting": 30, "distance": 885, "rating": 4.5, "spicy": 0, "purpose": ["친목"]}, {"name": "하루 규동코너", "menu": "규동", "category": "일식", "price": 11000, "capacity": 24, "waiting": 10, "distance": 515, "rating": 4.9, "spicy": 0, "purpose": ["혼밥", "친목"]}, {"name": "하루 카레부엌", "menu": "카레", "category": "일식", "price": 10500, "capacity": 40, "waiting": 7, "distance": 496, "rating": 4.9, "spicy": 1, "purpose": ["친목", "회식"]}, {"name": "담온 샌드포차", "menu": "샌드위치", "category": "샐러드", "price": 9000, "capacity": 30, "waiting": 29, "distance": 91, "rating": 4.9, "spicy": 0, "purpose": ["혼밥"]}, {"name": "담온 반미테이블", "menu": "반미", "category": "베트남", "price": 8000, "capacity": 30, "waiting": 28, "distance": 394, "rating": 4.9, "spicy": 1, "purpose": ["혼밥", "친목"]}, {"name": "푸른 규동비스트로", "menu": "규동", "category": "일식", "price": 11000, "capacity": 16, "waiting": 4, "distance": 283, "rating": 4.7, "spicy": 0, "purpose": ["혼밥", "친목"]}, {"name": "담백한 냉면가든", "menu": "냉면", "category": "한식", "price": 11000, "capacity": 30, "waiting": 5, "distance": 1178, "rating": 4.9, "spicy": 0, "purpose": ["친목"]}, {"name": "별미 짜조스토리", "menu": "짜조", "category": "베트남", "price": 6000, "capacity": 80, "waiting": 15, "distance": 511, "rating": 3.9, "spicy": 0, "purpose": ["혼밥", "친목"]}, {"name": "한끼 스테비스트로", "menu": "스테이크", "category": "양식", "price": 21000, "capacity": 12, "waiting": 16, "distance": 455, "rating": 4.7, "spicy": 0, "purpose": ["친목", "미팅"]}, {"name": "골목 볶음포차", "menu": "볶음밥", "category": "중식", "price": 10000, "capacity": 60, "waiting": 18, "distance": 119, "rating": 4.0, "spicy": 0, "purpose": ["친목", "회식"]}, {"name": "담온 된장면옥", "menu": "된장찌개", "category": "한식", "price": 9000, "capacity": 40, "waiting": 19, "distance": 538, "rating": 4.1, "spicy": 0, "purpose": ["혼밥", "친목"]}, {"name": "행복한 피자하우스", "menu": "피자", "category": "양식", "price": 22000, "capacity": 12, "waiting": 3, "distance": 470, "rating": 4.2, "spicy": 0, "purpose": ["혼밥", "친목"]}, {"name": "정성 순두랩", "menu": "순두부찌개", "category": "한식", "price": 10000, "capacity": 24, "waiting": 8, "distance": 150, "rating": 4.7, "spicy": 2, "purpose": ["혼밥", "친목"]}, {"name": "풍년 우동식당", "menu": "우동", "category": "일식", "price": 8000, "capacity": 30, "waiting": 8, "distance": 452, "rating": 4.8, "spicy": 0, "purpose": ["혼밥", "친목"]}, {"name": "라온 치킨면옥", "menu": "치킨샐러드", "category": "샐러드", "price": 12000, "capacity": 60, "waiting": 22, "distance": 575, "rating": 4.3, "spicy": 0, "purpose": ["혼밥", "친목"]}, {"name": "한끼 포케식당", "menu": "포케", "category": "샐러드", "price": 14000, "capacity": 60, "waiting": 5, "distance": 490, "rating": 4.1, "spicy": 0, "purpose": ["혼밥"]}, {"name": "라온 짬뽕밥집", "menu": "짬뽕", "category": "중식", "price": 11000, "capacity": 60, "waiting": 15, "distance": 779, "rating": 4.5, "spicy": 3, "purpose": ["친목", "회식"]}, {"name": "담온 짜조밥집", "menu": "짜조", "category": "베트남", "price": 8500, "capacity": 60, "waiting": 15, "distance": 206, "rating": 3.9, "spicy": 0, "purpose": ["혼밥", "친목"]}, {"name": "오월 햄버면옥", "menu": "햄버거", "category": "양식", "price": 11000, "capacity": 80, "waiting": 7, "distance": 705, "rating": 3.9, "spicy": 0, "purpose": ["친목", "회식"]}, {"name": "라온 반미하우스", "menu": "반미", "category": "베트남", "price": 9000, "capacity": 80, "waiting": 11, "distance": 1040, "rating": 4.1, "spicy": 1, "purpose": ["혼밥", "친목"]}, {"name": "담온 김밥테이블", "menu": "김밥", "category": "분식", "price": 5000, "capacity": 12, "waiting": 23, "distance": 598, "rating": 3.9, "spicy": 0, "purpose": ["혼밥"]}, {"name": "다온 갈비플레이트", "menu": "갈비탕", "category": "한식", "price": 12000, "capacity": 60, "waiting": 14, "distance": 1197, "rating": 3.8, "spicy": 0, "purpose": ["친목", "회식"]}, {"name": "골목 라볶면옥", "menu": "라볶이", "category": "분식", "price": 8000, "capacity": 40, "waiting": 17, "distance": 924, "rating": 3.9, "spicy": 4, "purpose": ["혼밥"]}, {"name": "골목 유산랩", "menu": "유산슬덮밥", "category": "중식", "price": 13000, "capacity": 24, "waiting": 17, "distance": 823, "rating": 4.4, "spicy": 0, "purpose": ["친목"]}, {"name": "고운 제육다이닝", "menu": "제육볶음", "category": "한식", "price": 11000, "capacity": 60, "waiting": 5, "distance": 111, "rating": 3.7, "spicy": 2, "purpose": ["친목", "회식"]}, {"name": "온기 햄버랩", "menu": "햄버거", "category": "양식", "price": 11000, "capacity": 20, "waiting": 3, "distance": 656, "rating": 4.4, "spicy": 0, "purpose": ["혼밥", "친목"]}, {"name": "행복한 초밥부엌", "menu": "초밥", "category": "일식", "price": 20000, "capacity": 40, "waiting": 20, "distance": 126, "rating": 3.8, "spicy": 0, "purpose": ["회식"]}, {"name": "다온 초밥테이블", "menu": "초밥", "category": "일식", "price": 17000, "capacity": 20, "waiting": 12, "distance": 1046, "rating": 4.8, "spicy": 0, "purpose": ["혼밥", "친목", "미팅"]}, {"name": "도담 반미스토리", "menu": "반미", "category": "베트남", "price": 9500, "capacity": 20, "waiting": 27, "distance": 1126, "rating": 4.7, "spicy": 1, "purpose": ["혼밥", "친목"]}, {"name": "다온 불고면옥", "menu": "불고기", "category": "한식", "price": 15000, "capacity": 30, "waiting": 4, "distance": 774, "rating": 4.0, "spicy": 0, "purpose": ["친목"]}, {"name": "하루 파스플레이트", "menu": "파스타", "category": "양식", "price": 15000, "capacity": 12, "waiting": 17, "distance": 1174, "rating": 4.6, "spicy": 0, "purpose": ["친목", "미팅"]}, {"name": "하루 탄탄하우스", "menu": "탄탄면", "category": "중식", "price": 11000, "capacity": 24, "waiting": 30, "distance": 1153, "rating": 3.9, "spicy": 2, "purpose": ["친목"]}, {"name": "담백한 파스플레이트", "menu": "파스타", "category": "양식", "price": 13500, "capacity": 40, "waiting": 8, "distance": 311, "rating": 3.8, "spicy": 0, "purpose": ["친목", "회식"]}, {"name": "담백한 치킨부엌", "menu": "치킨샐러드", "category": "샐러드", "price": 13500, "capacity": 16, "waiting": 15, "distance": 53, "rating": 4.5, "spicy": 0, "purpose": ["혼밥", "친목"]}, {"name": "도담 규동테이블", "menu": "규동", "category": "일식", "price": 12000, "capacity": 16, "waiting": 26, "distance": 774, "rating": 4.8, "spicy": 0, "purpose": ["친목"]}, {"name": "오늘 피자부엌", "menu": "피자", "category": "양식", "price": 20000, "capacity": 80, "waiting": 29, "distance": 147, "rating": 4.7, "spicy": 0, "purpose": ["회식"]}, {"name": "한끼 연어랩", "menu": "연어샐러드", "category": "샐러드", "price": 11500, "capacity": 12, "waiting": 21, "distance": 55, "rating": 4.0, "spicy": 0, "purpose": ["혼밥"]}, {"name": "한끼 탄탄포차", "menu": "탄탄면", "category": "중식", "price": 10000, "capacity": 24, "waiting": 23, "distance": 876, "rating": 3.8, "spicy": 2, "purpose": ["친목"]}, {"name": "라온 햄버코너", "menu": "햄버거", "category": "양식", "price": 9500, "capacity": 12, "waiting": 12, "distance": 780, "rating": 4.9, "spicy": 0, "purpose": ["혼밥", "친목"]}, {"name": "골목 순대부엌", "menu": "순대", "category": "분식", "price": 7000, "capacity": 20, "waiting": 20, "distance": 347, "rating": 4.2, "spicy": 1, "purpose": ["혼밥", "친목"]}, {"name": "하루 반미코너", "menu": "반미", "category": "베트남", "price": 10000, "capacity": 24, "waiting": 28, "distance": 140, "rating": 4.0, "spicy": 1, "purpose": ["친목"]}, {"name": "온담 우동스토리", "menu": "우동", "category": "일식", "price": 9500, "capacity": 80, "waiting": 26, "distance": 478, "rating": 5.0, "spicy": 0, "purpose": ["혼밥", "친목"]}, {"name": "오월 라볶코너", "menu": "라볶이", "category": "분식", "price": 7000, "capacity": 60, "waiting": 13, "distance": 1065, "rating": 4.6, "spicy": 4, "purpose": ["혼밥", "친목"]}, {"name": "담온 갈비키친", "menu": "갈비탕", "category": "한식", "price": 16000, "capacity": 30, "waiting": 6, "distance": 122, "rating": 4.2, "spicy": 0, "purpose": ["친목"]}, {"name": "온기 유산포차", "menu": "유산슬덮밥", "category": "중식", "price": 13000, "capacity": 60, "waiting": 8, "distance": 168, "rating": 4.8, "spicy": 0, "purpose": ["친목", "회식"]}, {"name": "오월 짜장플레이트", "menu": "짜장면", "category": "중식", "price": 8000, "capacity": 16, "waiting": 24, "distance": 817, "rating": 4.7, "spicy": 0, "purpose": ["혼밥", "친목"]}, {"name": "행복한 유산키친", "menu": "유산슬덮밥", "category": "중식", "price": 13000, "capacity": 20, "waiting": 9, "distance": 575, "rating": 4.6, "spicy": 0, "purpose": ["혼밥", "친목"]}, {"name": "담온 스테밥집", "menu": "스테이크", "category": "양식", "price": 23000, "capacity": 80, "waiting": 5, "distance": 720, "rating": 5.0, "spicy": 0, "purpose": ["친목", "미팅", "회식"]}, {"name": "행복한 분짜밥집", "menu": "분짜", "category": "베트남", "price": 14000, "capacity": 16, "waiting": 24, "distance": 127, "rating": 4.5, "spicy": 0, "purpose": ["친목"]}, {"name": "도담 떡볶비스트로", "menu": "떡볶이", "category": "분식", "price": 5000, "capacity": 30, "waiting": 24, "distance": 424, "rating": 4.2, "spicy": 4, "purpose": ["혼밥", "친목"]}, {"name": "고운 규동스토리", "menu": "규동", "category": "일식", "price": 12000, "capacity": 80, "waiting": 5, "distance": 612, "rating": 4.5, "spicy": 0, "purpose": ["친목", "미팅", "회식"]}, {"name": "미소 피자부엌", "menu": "피자", "category": "양식", "price": 15000, "capacity": 60, "waiting": 16, "distance": 391, "rating": 3.9, "spicy": 0, "purpose": ["친목", "회식"]}, {"name": "하루 된장하우스", "menu": "된장찌개", "category": "한식", "price": 9500, "capacity": 16, "waiting": 27, "distance": 676, "rating": 4.3, "spicy": 0, "purpose": ["혼밥", "친목"]}, {"name": "별미 짜장면옥", "menu": "짜장면", "category": "중식", "price": 8000, "capacity": 30, "waiting": 26, "distance": 955, "rating": 4.0, "spicy": 0, "purpose": ["혼밥", "친목"]}, {"name": "푸른 치킨밥집", "menu": "치킨샐러드", "category": "샐러드", "price": 12500, "capacity": 60, "waiting": 27, "distance": 824, "rating": 3.7, "spicy": 0, "purpose": ["혼밥"]}, {"name": "라온 비빔키친", "menu": "비빔밥", "category": "한식", "price": 10000, "capacity": 12, "waiting": 18, "distance": 907, "rating": 4.3, "spicy": 1, "purpose": ["친목"]}, {"name": "도담 치킨테이블", "menu": "치킨샐러드", "category": "샐러드", "price": 13000, "capacity": 40, "waiting": 10, "distance": 866, "rating": 4.7, "spicy": 0, "purpose": ["혼밥", "친목"]}, {"name": "정성 햄버하우스", "menu": "햄버거", "category": "양식", "price": 11500, "capacity": 16, "waiting": 13, "distance": 138, "rating": 4.8, "spicy": 0, "purpose": ["혼밥", "친목"]}, {"name": "하루 김밥코너", "menu": "김밥", "category": "분식", "price": 5500, "capacity": 40, "waiting": 19, "distance": 498, "rating": 4.0, "spicy": 0, "purpose": ["혼밥"]}, {"name": "푸른 김치테이블", "menu": "김치찌개", "category": "한식", "price": 10000, "capacity": 60, "waiting": 12, "distance": 214, "rating": 4.2, "spicy": 2, "purpose": ["친목", "회식"]}, {"name": "하루 쫄면면옥", "menu": "쫄면", "category": "분식", "price": 8000, "capacity": 80, "waiting": 19, "distance": 827, "rating": 4.2, "spicy": 2, "purpose": ["혼밥", "친목"]}, {"name": "풍년 햄버스토리", "menu": "햄버거", "category": "양식", "price": 10500, "capacity": 12, "waiting": 24, "distance": 155, "rating": 4.8, "spicy": 0, "purpose": ["친목"]}, {"name": "온담 짜장면옥", "menu": "짜장면", "category": "중식", "price": 9000, "capacity": 40, "waiting": 3, "distance": 1166, "rating": 4.5, "spicy": 0, "purpose": ["혼밥", "친목"]}, {"name": "도담 초밥밥집", "menu": "초밥", "category": "일식", "price": 19000, "capacity": 60, "waiting": 12, "distance": 217, "rating": 4.1, "spicy": 0, "purpose": ["회식"]}, {"name": "소담 돈까테이블", "menu": "돈까스", "category": "일식", "price": 13000, "capacity": 80, "waiting": 21, "distance": 856, "rating": 3.8, "spicy": 0, "purpose": ["친목", "회식"]}, {"name": "소담 규동비스트로", "menu": "규동", "category": "일식", "price": 10000, "capacity": 30, "waiting": 14, "distance": 1054, "rating": 4.3, "spicy": 0, "purpose": ["친목"]}, {"name": "행복한 김치하우스", "menu": "김치찌개", "category": "한식", "price": 10000, "capacity": 30, "waiting": 4, "distance": 978, "rating": 4.3, "spicy": 2, "purpose": ["친목"]}, {"name": "정성 김밥가든", "menu": "김밥", "category": "분식", "price": 5000, "capacity": 16, "waiting": 29, "distance": 582, "rating": 4.3, "spicy": 0, "purpose": ["혼밥"]}, {"name": "라온 김밥가든", "menu": "김밥", "category": "분식", "price": 5000, "capacity": 16, "waiting": 10, "distance": 204, "rating": 3.9, "spicy": 0, "purpose": ["혼밥"]}, {"name": "한끼 짜조키친", "menu": "짜조", "category": "베트남", "price": 7000, "capacity": 80, "waiting": 5, "distance": 851, "rating": 4.0, "spicy": 0, "purpose": ["혼밥", "친목"]}, {"name": "담백한 돈까스토리", "menu": "돈까스", "category": "일식", "price": 12000, "capacity": 40, "waiting": 6, "distance": 1036, "rating": 5.0, "spicy": 0, "purpose": ["친목", "미팅", "회식"]}, {"name": "소담 리조포차", "menu": "리조또", "category": "양식", "price": 14000, "capacity": 20, "waiting": 28, "distance": 712, "rating": 4.6, "spicy": 0, "purpose": ["친목"]}, {"name": "행복한 볶음테이블", "menu": "볶음밥", "category": "중식", "price": 9000, "capacity": 30, "waiting": 6, "distance": 243, "rating": 4.0, "spicy": 0, "purpose": ["혼밥", "친목"]}, {"name": "라온 김밥테이블", "menu": "김밥", "category": "분식", "price": 4000, "capacity": 12, "waiting": 20, "distance": 471, "rating": 4.1, "spicy": 0, "purpose": ["혼밥"]}, {"name": "행복한 포케코너", "menu": "포케", "category": "샐러드", "price": 13500, "capacity": 12, "waiting": 7, "distance": 96, "rating": 4.0, "spicy": 0, "purpose": ["혼밥"]}, {"name": "담백한 분짜면옥", "menu": "분짜", "category": "베트남", "price": 13000, "capacity": 24, "waiting": 11, "distance": 93, "rating": 4.1, "spicy": 0, "purpose": ["혼밥", "친목"]}, {"name": "별미 분짜테이블", "menu": "분짜", "category": "베트남", "price": 12000, "capacity": 24, "waiting": 29, "distance": 819, "rating": 4.5, "spicy": 0, "purpose": ["친목"]}, {"name": "한끼 마라다이닝", "menu": "마라탕", "category": "중식", "price": 11000, "capacity": 20, "waiting": 4, "distance": 988, "rating": 4.6, "spicy": 5, "purpose": ["혼밥", "친목"]}, {"name": "라온 짜조플레이트", "menu": "짜조", "category": "베트남", "price": 7000, "capacity": 20, "waiting": 18, "distance": 685, "rating": 4.2, "spicy": 0, "purpose": ["혼밥", "친목"]}, {"name": "하루 순두식당", "menu": "순두부찌개", "category": "한식", "price": 9000, "capacity": 12, "waiting": 3, "distance": 756, "rating": 4.9, "spicy": 2, "purpose": ["혼밥", "친목"]}, {"name": "다온 제육식당", "menu": "제육볶음", "category": "한식", "price": 10000, "capacity": 60, "waiting": 18, "distance": 444, "rating": 4.4, "spicy": 2, "purpose": ["친목", "회식"]}, {"name": "행복한 떡볶비스트로", "menu": "떡볶이", "category": "분식", "price": 6000, "capacity": 40, "waiting": 19, "distance": 975, "rating": 3.9, "spicy": 4, "purpose": ["혼밥"]}, {"name": "고운 떡볶플레이트", "menu": "떡볶이", "category": "분식", "price": 5000, "capacity": 16, "waiting": 4, "distance": 731, "rating": 3.9, "spicy": 4, "purpose": ["혼밥"]}, {"name": "오늘 연어가든", "menu": "연어샐러드", "category": "샐러드", "price": 12000, "capacity": 24, "waiting": 8, "distance": 907, "rating": 3.9, "spicy": 0, "purpose": ["혼밥"]}, {"name": "오늘 순대면옥", "menu": "순대", "category": "분식", "price": 8500, "capacity": 30, "waiting": 26, "distance": 255, "rating": 4.6, "spicy": 1, "purpose": ["혼밥"]}, {"name": "온담 스테밥집", "menu": "스테이크", "category": "양식", "price": 20000, "capacity": 12, "waiting": 6, "distance": 338, "rating": 4.9, "spicy": 0, "purpose": ["혼밥", "친목", "미팅"]}, {"name": "소담 피자코너", "menu": "피자", "category": "양식", "price": 22000, "capacity": 16, "waiting": 18, "distance": 996, "rating": 4.9, "spicy": 0, "purpose": ["친목", "미팅"]}, {"name": "담백한 냉면면옥", "menu": "냉면", "category": "한식", "price": 11000, "capacity": 20, "waiting": 22, "distance": 1072, "rating": 4.2, "spicy": 0, "purpose": ["친목"]}, {"name": "오늘 불고랩", "menu": "불고기", "category": "한식", "price": 14000, "capacity": 80, "waiting": 7, "distance": 330, "rating": 3.8, "spicy": 0, "purpose": ["친목", "회식"]}, {"name": "온담 우동면옥", "menu": "우동", "category": "일식", "price": 9000, "capacity": 16, "waiting": 28, "distance": 524, "rating": 4.7, "spicy": 0, "purpose": ["혼밥", "친목"]}, {"name": "오월 유산하우스", "menu": "유산슬덮밥", "category": "중식", "price": 14500, "capacity": 60, "waiting": 7, "distance": 113, "rating": 4.6, "spicy": 0, "purpose": ["친목", "회식"]}, {"name": "담백한 라볶키친", "menu": "라볶이", "category": "분식", "price": 8500, "capacity": 24, "waiting": 4, "distance": 543, "rating": 4.6, "spicy": 4, "purpose": ["혼밥", "친목"]}, {"name": "미소 갈비가든", "menu": "갈비탕", "category": "한식", "price": 15000, "capacity": 20, "waiting": 16, "distance": 875, "rating": 3.8, "spicy": 0, "purpose": ["친목"]}, {"name": "별미 떡볶비스트로", "menu": "떡볶이", "category": "분식", "price": 5500, "capacity": 40, "waiting": 17, "distance": 696, "rating": 4.5, "spicy": 4, "purpose": ["혼밥", "친목"]}, {"name": "소담 냉면다이닝", "menu": "냉면", "category": "한식", "price": 11000, "capacity": 24, "waiting": 14, "distance": 370, "rating": 4.3, "spicy": 0, "purpose": ["혼밥", "친목"]}, {"name": "온기 냉면다이닝", "menu": "냉면", "category": "한식", "price": 11000, "capacity": 20, "waiting": 30, "distance": 907, "rating": 4.0, "spicy": 0, "purpose": ["친목"]}, {"name": "오늘 짜장밥집", "menu": "짜장면", "category": "중식", "price": 9000, "capacity": 20, "waiting": 22, "distance": 968, "rating": 3.8, "spicy": 0, "purpose": ["혼밥", "친목"]}, {"name": "한끼 갈비면옥", "menu": "갈비탕", "category": "한식", "price": 14500, "capacity": 20, "waiting": 8, "distance": 149, "rating": 4.7, "spicy": 0, "purpose": ["혼밥", "친목", "미팅"]}, {"name": "풍년 김치다이닝", "menu": "김치찌개", "category": "한식", "price": 9000, "capacity": 20, "waiting": 13, "distance": 296, "rating": 4.2, "spicy": 2, "purpose": ["혼밥", "친목"]}, {"name": "미소 규동스토리", "menu": "규동", "category": "일식", "price": 13000, "capacity": 80, "waiting": 20, "distance": 645, "rating": 4.9, "spicy": 0, "purpose": ["친목", "미팅", "회식"]}, {"name": "오늘 피자면옥", "menu": "피자", "category": "양식", "price": 16000, "capacity": 16, "waiting": 22, "distance": 244, "rating": 4.3, "spicy": 0, "purpose": ["친목"]}, {"name": "풍년 비빔다이닝", "menu": "비빔밥", "category": "한식", "price": 10000, "capacity": 20, "waiting": 28, "distance": 734, "rating": 4.6, "spicy": 1, "purpose": ["친목"]}, {"name": "소담 리조식당", "menu": "리조또", "category": "양식", "price": 14000, "capacity": 60, "waiting": 9, "distance": 1160, "rating": 4.6, "spicy": 0, "purpose": ["친목", "미팅", "회식"]}, {"name": "소담 짜조하우스", "menu": "짜조", "category": "베트남", "price": 8000, "capacity": 12, "waiting": 11, "distance": 848, "rating": 3.9, "spicy": 0, "purpose": ["혼밥", "친목"]}, {"name": "미소 짜조코너", "menu": "짜조", "category": "베트남", "price": 7000, "capacity": 40, "waiting": 3, "distance": 439, "rating": 3.7, "spicy": 0, "purpose": ["혼밥", "친목"]}, {"name": "풍년 우동포차", "menu": "우동", "category": "일식", "price": 9000, "capacity": 20, "waiting": 17, "distance": 97, "rating": 4.8, "spicy": 0, "purpose": ["혼밥", "친목"]}, {"name": "오늘 돈까식당", "menu": "돈까스", "category": "일식", "price": 13500, "capacity": 30, "waiting": 28, "distance": 835, "rating": 4.7, "spicy": 0, "purpose": ["친목"]}, {"name": "푸른 불고플레이트", "menu": "불고기", "category": "한식", "price": 13000, "capacity": 60, "waiting": 8, "distance": 429, "rating": 3.7, "spicy": 0, "purpose": ["친목", "회식"]}, {"name": "골목 짬뽕비스트로", "menu": "짬뽕", "category": "중식", "price": 9500, "capacity": 30, "waiting": 17, "distance": 483, "rating": 4.8, "spicy": 3, "purpose": ["혼밥", "친목"]}, {"name": "정성 리조테이블", "menu": "리조또", "category": "양식", "price": 13500, "capacity": 24, "waiting": 24, "distance": 1036, "rating": 4.6, "spicy": 0, "purpose": ["친목"]}, {"name": "오늘 짜조가든", "menu": "짜조", "category": "베트남", "price": 7000, "capacity": 40, "waiting": 18, "distance": 594, "rating": 4.0, "spicy": 0, "purpose": ["혼밥", "친목"]}, {"name": "다온 파스식당", "menu": "파스타", "category": "양식", "price": 14000, "capacity": 24, "waiting": 9, "distance": 106, "rating": 4.4, "spicy": 0, "purpose": ["혼밥", "친목", "미팅"]}, {"name": "오월 햄버스토리", "menu": "햄버거", "category": "양식", "price": 11000, "capacity": 16, "waiting": 13, "distance": 1073, "rating": 4.2, "spicy": 0, "purpose": ["혼밥", "친목"]}, {"name": "별미 된장스토리", "menu": "된장찌개", "category": "한식", "price": 9000, "capacity": 30, "waiting": 6, "distance": 471, "rating": 4.1, "spicy": 0, "purpose": ["혼밥", "친목"]}, {"name": "푸른 떡볶식당", "menu": "떡볶이", "category": "분식", "price": 6000, "capacity": 30, "waiting": 15, "distance": 1077, "rating": 4.6, "spicy": 4, "purpose": ["혼밥", "친목"]}, {"name": "오월 연어포차", "menu": "연어샐러드", "category": "샐러드", "price": 13000, "capacity": 12, "waiting": 3, "distance": 896, "rating": 4.6, "spicy": 0, "purpose": ["혼밥", "친목"]}, {"name": "온기 쌀국스토리", "menu": "쌀국수", "category": "베트남", "price": 11000, "capacity": 12, "waiting": 15, "distance": 144, "rating": 4.2, "spicy": 0, "purpose": ["혼밥", "친목"]}, {"name": "담온 볶음코너", "menu": "볶음밥", "category": "중식", "price": 8000, "capacity": 40, "waiting": 9, "distance": 52, "rating": 4.1, "spicy": 0, "purpose": ["혼밥", "친목"]}, {"name": "오월 비빔테이블", "menu": "비빔밥", "category": "한식", "price": 10500, "capacity": 30, "waiting": 9, "distance": 183, "rating": 3.9, "spicy": 1, "purpose": ["친목"]}, {"name": "골목 불고랩", "menu": "불고기", "category": "한식", "price": 15000, "capacity": 30, "waiting": 13, "distance": 76, "rating": 3.8, "spicy": 0, "purpose": ["친목"]}, {"name": "오월 된장가든", "menu": "된장찌개", "category": "한식", "price": 9500, "capacity": 12, "waiting": 7, "distance": 354, "rating": 4.1, "spicy": 0, "purpose": ["혼밥", "친목"]}, {"name": "풍년 마라키친", "menu": "마라탕", "category": "중식", "price": 11000, "capacity": 16, "waiting": 12, "distance": 906, "rating": 4.9, "spicy": 5, "purpose": ["혼밥", "친목"]}, {"name": "다온 볶음랩", "menu": "볶음밥", "category": "중식", "price": 10000, "capacity": 30, "waiting": 3, "distance": 302, "rating": 4.6, "spicy": 0, "purpose": ["친목"]}, {"name": "온담 쫄면밥집", "menu": "쫄면", "category": "분식", "price": 8000, "capacity": 16, "waiting": 14, "distance": 318, "rating": 4.5, "spicy": 2, "purpose": ["혼밥", "친목"]}, {"name": "온담 떡볶하우스", "menu": "떡볶이", "category": "분식", "price": 7000, "capacity": 80, "waiting": 20, "distance": 101, "rating": 4.6, "spicy": 4, "purpose": ["혼밥", "친목"]}, {"name": "오늘 비빔테이블", "menu": "비빔밥", "category": "한식", "price": 11000, "capacity": 30, "waiting": 16, "distance": 442, "rating": 4.7, "spicy": 1, "purpose": ["친목"]}, {"name": "고운 분짜플레이트", "menu": "분짜", "category": "베트남", "price": 12500, "capacity": 40, "waiting": 12, "distance": 769, "rating": 4.5, "spicy": 0, "purpose": ["친목", "회식"]}, {"name": "담백한 반미면옥", "menu": "반미", "category": "베트남", "price": 9000, "capacity": 60, "waiting": 24, "distance": 414, "rating": 4.8, "spicy": 1, "purpose": ["혼밥", "친목"]}, {"name": "온기 유산테이블", "menu": "유산슬덮밥", "category": "중식", "price": 12000, "capacity": 20, "waiting": 11, "distance": 716, "rating": 3.7, "spicy": 0, "purpose": ["혼밥", "친목"]}, {"name": "별미 김치다이닝", "menu": "김치찌개", "category": "한식", "price": 10000, "capacity": 24, "waiting": 4, "distance": 518, "rating": 4.3, "spicy": 2, "purpose": ["혼밥", "친목"]}, {"name": "푸른 우동테이블", "menu": "우동", "category": "일식", "price": 10000, "capacity": 16, "waiting": 9, "distance": 128, "rating": 4.9, "spicy": 0, "purpose": ["혼밥", "친목"]}, {"name": "골목 냉면밥집", "menu": "냉면", "category": "한식", "price": 11000, "capacity": 12, "waiting": 26, "distance": 1056, "rating": 5.0, "spicy": 0, "purpose": ["친목"]}, {"name": "미소 마라스토리", "menu": "마라탕", "category": "중식", "price": 12000, "capacity": 12, "waiting": 24, "distance": 965, "rating": 3.7, "spicy": 5, "purpose": ["친목"]}, {"name": "미소 된장코너", "menu": "된장찌개", "category": "한식", "price": 9000, "capacity": 16, "waiting": 26, "distance": 1066, "rating": 4.5, "spicy": 0, "purpose": ["혼밥", "친목"]}, {"name": "하루 갈비하우스", "menu": "갈비탕", "category": "한식", "price": 16000, "capacity": 60, "waiting": 13, "distance": 413, "rating": 3.8, "spicy": 0, "purpose": ["회식"]}, {"name": "담백한 초밥포차", "menu": "초밥", "category": "일식", "price": 18000, "capacity": 16, "waiting": 28, "distance": 406, "rating": 4.1, "spicy": 0, "purpose": ["혼밥"]}, {"name": "미소 순두플레이트", "menu": "순두부찌개", "category": "한식", "price": 9000, "capacity": 40, "waiting": 23, "distance": 547, "rating": 4.1, "spicy": 2, "purpose": ["혼밥", "친목"]}, {"name": "온담 비빔비스트로", "menu": "비빔밥", "category": "한식", "price": 11500, "capacity": 40, "waiting": 9, "distance": 313, "rating": 4.2, "spicy": 1, "purpose": ["친목", "회식"]}, {"name": "담백한 피자비스트로", "menu": "피자", "category": "양식", "price": 21000, "capacity": 60, "waiting": 17, "distance": 611, "rating": 4.9, "spicy": 0, "purpose": ["친목", "미팅", "회식"]}, {"name": "고운 유산면옥", "menu": "유산슬덮밥", "category": "중식", "price": 14000, "capacity": 16, "waiting": 17, "distance": 846, "rating": 3.9, "spicy": 0, "purpose": ["친목"]}, {"name": "골목 제육하우스", "menu": "제육볶음", "category": "한식", "price": 11000, "capacity": 30, "waiting": 24, "distance": 238, "rating": 4.4, "spicy": 2, "purpose": ["친목"]}, {"name": "담백한 돈까코너", "menu": "돈까스", "category": "일식", "price": 12000, "capacity": 24, "waiting": 9, "distance": 1143, "rating": 4.0, "spicy": 0, "purpose": ["혼밥", "친목"]}, {"name": "오늘 짜조밥집", "menu": "짜조", "category": "베트남", "price": 5000, "capacity": 16, "waiting": 30, "distance": 818, "rating": 4.6, "spicy": 0, "purpose": ["혼밥", "친목"]}, {"name": "담온 우동스토리", "menu": "우동", "category": "일식", "price": 8000, "capacity": 40, "waiting": 25, "distance": 750, "rating": 4.2, "spicy": 0, "purpose": ["혼밥", "친목"]}, {"name": "고운 쫄면비스트로", "menu": "쫄면", "category": "분식", "price": 9000, "capacity": 30, "waiting": 16, "distance": 421, "rating": 4.6, "spicy": 2, "purpose": ["혼밥", "친목"]}, {"name": "골목 짜조부엌", "menu": "짜조", "category": "베트남", "price": 7000, "capacity": 20, "waiting": 27, "distance": 993, "rating": 4.6, "spicy": 0, "purpose": ["혼밥", "친목"]}, {"name": "온기 비빔부엌", "menu": "비빔밥", "category": "한식", "price": 11000, "capacity": 16, "waiting": 24, "distance": 988, "rating": 4.5, "spicy": 1, "purpose": ["친목"]}, {"name": "별미 마라플레이트", "menu": "마라탕", "category": "중식", "price": 12000, "capacity": 24, "waiting": 16, "distance": 774, "rating": 3.7, "spicy": 5, "purpose": ["친목"]}, {"name": "하루 볶음스토리", "menu": "볶음밥", "category": "중식", "price": 9000, "capacity": 80, "waiting": 28, "distance": 616, "rating": 4.4, "spicy": 0, "purpose": ["혼밥", "친목"]}, {"name": "소담 순두면옥", "menu": "순두부찌개", "category": "한식", "price": 10000, "capacity": 12, "waiting": 27, "distance": 515, "rating": 4.7, "spicy": 2, "purpose": ["친목"]}, {"name": "담백한 냉면면옥", "menu": "냉면", "category": "한식", "price": 9000, "capacity": 80, "waiting": 25, "distance": 843, "rating": 4.4, "spicy": 0, "purpose": ["혼밥", "친목"]}, {"name": "오월 분짜식당", "menu": "분짜", "category": "베트남", "price": 14500, "capacity": 24, "waiting": 27, "distance": 820, "rating": 4.8, "spicy": 0, "purpose": ["친목"]}, {"name": "고운 순두부엌", "menu": "순두부찌개", "category": "한식", "price": 10000, "capacity": 40, "waiting": 21, "distance": 57, "rating": 4.6, "spicy": 2, "purpose": ["친목", "회식"]}, {"name": "하루 초밥키친", "menu": "초밥", "category": "일식", "price": 15500, "capacity": 12, "waiting": 11, "distance": 498, "rating": 4.4, "spicy": 0, "purpose": ["혼밥", "친목", "미팅"]}, {"name": "오늘 비빔부엌", "menu": "비빔밥", "category": "한식", "price": 8500, "capacity": 30, "waiting": 8, "distance": 1131, "rating": 4.3, "spicy": 1, "purpose": ["혼밥", "친목"]}, {"name": "하루 햄버랩", "menu": "햄버거", "category": "양식", "price": 9000, "capacity": 60, "waiting": 27, "distance": 277, "rating": 4.8, "spicy": 0, "purpose": ["혼밥", "친목"]}, {"name": "담온 갈비테이블", "menu": "갈비탕", "category": "한식", "price": 15500, "capacity": 40, "waiting": 4, "distance": 958, "rating": 4.2, "spicy": 0, "purpose": ["친목", "회식"]}, {"name": "오늘 마라코너", "menu": "마라탕", "category": "중식", "price": 11000, "capacity": 20, "waiting": 6, "distance": 234, "rating": 4.9, "spicy": 5, "purpose": ["혼밥", "친목"]}, {"name": "도담 마라가든", "menu": "마라탕", "category": "중식", "price": 11500, "capacity": 12, "waiting": 23, "distance": 687, "rating": 4.4, "spicy": 5, "purpose": ["친목"]}, {"name": "푸른 김치키친", "menu": "김치찌개", "category": "한식", "price": 11000, "capacity": 80, "waiting": 5, "distance": 414, "rating": 4.6, "spicy": 2, "purpose": ["친목", "회식"]}, {"name": "풍년 샌드플레이트", "menu": "샌드위치", "category": "샐러드", "price": 8000, "capacity": 16, "waiting": 17, "distance": 534, "rating": 4.6, "spicy": 0, "purpose": ["혼밥", "친목"]}, {"name": "오늘 분짜랩", "menu": "분짜", "category": "베트남", "price": 13500, "capacity": 60, "waiting": 13, "distance": 536, "rating": 4.7, "spicy": 0, "purpose": ["친목", "회식"]}, {"name": "고운 햄버테이블", "menu": "햄버거", "category": "양식", "price": 10500, "capacity": 16, "waiting": 7, "distance": 1194, "rating": 4.5, "spicy": 0, "purpose": ["혼밥", "친목"]}, {"name": "행복한 갈비면옥", "menu": "갈비탕", "category": "한식", "price": 13000, "capacity": 30, "waiting": 19, "distance": 352, "rating": 4.6, "spicy": 0, "purpose": ["친목", "미팅"]}, {"name": "오늘 짜조밥집", "menu": "짜조", "category": "베트남", "price": 8000, "capacity": 40, "waiting": 13, "distance": 1008, "rating": 3.9, "spicy": 0, "purpose": ["혼밥", "친목"]}, {"name": "골목 연어다이닝", "menu": "연어샐러드", "category": "샐러드", "price": 13000, "capacity": 60, "waiting": 24, "distance": 104, "rating": 4.9, "spicy": 0, "purpose": ["혼밥", "친목"]}, {"name": "라온 돈까밥집", "menu": "돈까스", "category": "일식", "price": 11000, "capacity": 24, "waiting": 11, "distance": 81, "rating": 4.9, "spicy": 0, "purpose": ["혼밥", "친목"]}, {"name": "온담 초밥키친", "menu": "초밥", "category": "일식", "price": 19000, "capacity": 12, "waiting": 16, "distance": 1142, "rating": 4.7, "spicy": 0, "purpose": ["친목", "미팅"]}, {"name": "담온 탄탄면옥", "menu": "탄탄면", "category": "중식", "price": 11500, "capacity": 16, "waiting": 7, "distance": 726, "rating": 4.5, "spicy": 2, "purpose": ["혼밥", "친목"]}, {"name": "도담 포케스토리", "menu": "포케", "category": "샐러드", "price": 12000, "capacity": 12, "waiting": 18, "distance": 117, "rating": 4.0, "spicy": 0, "purpose": ["혼밥"]}, {"name": "도담 라멘밥집", "menu": "라멘", "category": "일식", "price": 11000, "capacity": 60, "waiting": 19, "distance": 111, "rating": 4.2, "spicy": 1, "purpose": ["친목", "회식"]}, {"name": "고운 우동밥집", "menu": "우동", "category": "일식", "price": 9000, "capacity": 12, "waiting": 8, "distance": 1127, "rating": 4.4, "spicy": 0, "purpose": ["혼밥", "친목"]}, {"name": "하루 순대부엌", "menu": "순대", "category": "분식", "price": 7000, "capacity": 12, "waiting": 26, "distance": 1075, "rating": 4.9, "spicy": 1, "purpose": ["혼밥"]}, {"name": "행복한 돈까포차", "menu": "돈까스", "category": "일식", "price": 13000, "capacity": 12, "waiting": 12, "distance": 571, "rating": 4.2, "spicy": 0, "purpose": ["혼밥", "친목"]}, {"name": "온담 짬뽕밥집", "menu": "짬뽕", "category": "중식", "price": 11000, "capacity": 30, "waiting": 27, "distance": 1102, "rating": 4.7, "spicy": 3, "purpose": ["친목"]}, {"name": "하루 스테다이닝", "menu": "스테이크", "category": "양식", "price": 20000, "capacity": 12, "waiting": 21, "distance": 464, "rating": 4.5, "spicy": 0, "purpose": ["친목"]}, {"name": "담온 된장부엌", "menu": "된장찌개", "category": "한식", "price": 8500, "capacity": 80, "waiting": 14, "distance": 709, "rating": 3.8, "spicy": 0, "purpose": ["혼밥", "친목"]}, {"name": "오늘 짬뽕스토리", "menu": "짬뽕", "category": "중식", "price": 11000, "capacity": 12, "waiting": 28, "distance": 514, "rating": 4.6, "spicy": 3, "purpose": ["친목"]}, {"name": "오늘 포케다이닝", "menu": "포케", "category": "샐러드", "price": 13500, "capacity": 16, "waiting": 22, "distance": 946, "rating": 4.1, "spicy": 0, "purpose": ["혼밥"]}, {"name": "정성 쌀국플레이트", "menu": "쌀국수", "category": "베트남", "price": 13000, "capacity": 30, "waiting": 6, "distance": 633, "rating": 4.4, "spicy": 0, "purpose": ["친목"]}, {"name": "행복한 김치다이닝", "menu": "김치찌개", "category": "한식", "price": 9000, "capacity": 80, "waiting": 30, "distance": 1126, "rating": 4.4, "spicy": 2, "purpose": ["혼밥", "친목"]}, {"name": "오늘 피자스토리", "menu": "피자", "category": "양식", "price": 22000, "capacity": 12, "waiting": 4, "distance": 878, "rating": 4.7, "spicy": 0, "purpose": ["혼밥", "친목", "미팅"]}, {"name": "정성 탄탄키친", "menu": "탄탄면", "category": "중식", "price": 9000, "capacity": 12, "waiting": 28, "distance": 915, "rating": 4.3, "spicy": 2, "purpose": ["혼밥", "친목"]}, {"name": "미소 비빔코너", "menu": "비빔밥", "category": "한식", "price": 9000, "capacity": 30, "waiting": 23, "distance": 138, "rating": 4.3, "spicy": 1, "purpose": ["혼밥", "친목"]}, {"name": "한끼 피자비스트로", "menu": "피자", "category": "양식", "price": 17000, "capacity": 12, "waiting": 5, "distance": 263, "rating": 4.5, "spicy": 0, "purpose": ["혼밥", "친목", "미팅"]}, {"name": "풍년 파스코너", "menu": "파스타", "category": "양식", "price": 14000, "capacity": 24, "waiting": 8, "distance": 798, "rating": 4.3, "spicy": 0, "purpose": ["혼밥", "친목"]}, {"name": "도담 라멘면옥", "menu": "라멘", "category": "일식", "price": 11000, "capacity": 80, "waiting": 30, "distance": 445, "rating": 3.8, "spicy": 1, "purpose": ["친목", "회식"]}, {"name": "행복한 규동플레이트", "menu": "규동", "category": "일식", "price": 12000, "capacity": 12, "waiting": 28, "distance": 778, "rating": 3.8, "spicy": 0, "purpose": ["친목"]}, {"name": "온담 라볶포차", "menu": "라볶이", "category": "분식", "price": 7000, "capacity": 40, "waiting": 17, "distance": 958, "rating": 4.2, "spicy": 4, "purpose": ["혼밥", "친목"]}, {"name": "오월 김치밥집", "menu": "김치찌개", "category": "한식", "price": 9500, "capacity": 80, "waiting": 11, "distance": 902, "rating": 4.2, "spicy": 2, "purpose": ["혼밥", "친목"]}, {"name": "담온 분짜다이닝", "menu": "분짜", "category": "베트남", "price": 13000, "capacity": 40, "waiting": 3, "distance": 1140, "rating": 4.4, "spicy": 0, "purpose": ["친목", "회식"]}, {"name": "온기 연어테이블", "menu": "연어샐러드", "category": "샐러드", "price": 13000, "capacity": 24, "waiting": 24, "distance": 663, "rating": 4.1, "spicy": 0, "purpose": ["혼밥"]}, {"name": "골목 반미밥집", "menu": "반미", "category": "베트남", "price": 8000, "capacity": 40, "waiting": 19, "distance": 620, "rating": 4.4, "spicy": 1, "purpose": ["혼밥", "친목"]}, {"name": "다온 떡볶비스트로", "menu": "떡볶이", "category": "분식", "price": 6500, "capacity": 16, "waiting": 10, "distance": 545, "rating": 4.6, "spicy": 4, "purpose": ["혼밥", "친목"]}, {"name": "정성 우동밥집", "menu": "우동", "category": "일식", "price": 8000, "capacity": 24, "waiting": 12, "distance": 725, "rating": 4.5, "spicy": 0, "purpose": ["혼밥", "친목"]}, {"name": "도담 김밥하우스", "menu": "김밥", "category": "분식", "price": 5000, "capacity": 60, "waiting": 25, "distance": 665, "rating": 3.8, "spicy": 0, "purpose": ["혼밥"]}, {"name": "소담 마라면옥", "menu": "마라탕", "category": "중식", "price": 11000, "capacity": 16, "waiting": 19, "distance": 1051, "rating": 4.0, "spicy": 5, "purpose": ["친목"]}, {"name": "정성 비빔포차", "menu": "비빔밥", "category": "한식", "price": 10500, "capacity": 24, "waiting": 21, "distance": 1144, "rating": 4.1, "spicy": 1, "purpose": ["친목"]}, {"name": "오월 치킨포차", "menu": "치킨샐러드", "category": "샐러드", "price": 10500, "capacity": 20, "waiting": 26, "distance": 714, "rating": 4.8, "spicy": 0, "purpose": ["혼밥"]}, {"name": "소담 떡볶포차", "menu": "떡볶이", "category": "분식", "price": 6000, "capacity": 30, "waiting": 20, "distance": 55, "rating": 4.9, "spicy": 4, "purpose": ["혼밥", "친목"]}, {"name": "도담 스테스토리", "menu": "스테이크", "category": "양식", "price": 25000, "capacity": 80, "waiting": 12, "distance": 1008, "rating": 4.8, "spicy": 0, "purpose": ["친목", "미팅", "회식"]}, {"name": "오월 비빔밥집", "menu": "비빔밥", "category": "한식", "price": 10000, "capacity": 12, "waiting": 20, "distance": 1182, "rating": 4.9, "spicy": 1, "purpose": ["친목"]}, {"name": "담온 샌드플레이트", "menu": "샌드위치", "category": "샐러드", "price": 9000, "capacity": 40, "waiting": 9, "distance": 868, "rating": 3.9, "spicy": 0, "purpose": ["혼밥"]}, {"name": "고운 우동다이닝", "menu": "우동", "category": "일식", "price": 8000, "capacity": 30, "waiting": 23, "distance": 918, "rating": 4.0, "spicy": 0, "purpose": ["혼밥", "친목"]}, {"name": "소담 반미스토리", "menu": "반미", "category": "베트남", "price": 8500, "capacity": 12, "waiting": 16, "distance": 629, "rating": 4.2, "spicy": 1, "purpose": ["혼밥", "친목"]}, {"name": "별미 순두면옥", "menu": "순두부찌개", "category": "한식", "price": 9000, "capacity": 30, "waiting": 3, "distance": 742, "rating": 4.5, "spicy": 2, "purpose": ["혼밥", "친목"]}, {"name": "다온 초밥하우스", "menu": "초밥", "category": "일식", "price": 18500, "capacity": 24, "waiting": 22, "distance": 839, "rating": 4.1, "spicy": 0, "purpose": ["혼밥"]}, {"name": "담온 비빔테이블", "menu": "비빔밥", "category": "한식", "price": 9000, "capacity": 80, "waiting": 29, "distance": 1025, "rating": 4.7, "spicy": 1, "purpose": ["혼밥", "친목"]}, {"name": "담온 스테면옥", "menu": "스테이크", "category": "양식", "price": 29000, "capacity": 24, "waiting": 22, "distance": 880, "rating": 4.6, "spicy": 0, "purpose": ["친목"]}, {"name": "정성 연어부엌", "menu": "연어샐러드", "category": "샐러드", "price": 15000, "capacity": 20, "waiting": 23, "distance": 776, "rating": 4.1, "spicy": 0, "purpose": ["혼밥"]}, {"name": "소담 제육코너", "menu": "제육볶음", "category": "한식", "price": 12000, "capacity": 80, "waiting": 20, "distance": 1138, "rating": 3.7, "spicy": 2, "purpose": ["친목", "회식"]}, {"name": "하루 쫄면식당", "menu": "쫄면", "category": "분식", "price": 8000, "capacity": 80, "waiting": 17, "distance": 1113, "rating": 3.8, "spicy": 2, "purpose": ["혼밥"]}, {"name": "푸른 짜조랩", "menu": "짜조", "category": "베트남", "price": 8500, "capacity": 30, "waiting": 18, "distance": 949, "rating": 3.9, "spicy": 0, "purpose": ["혼밥", "친목"]}, {"name": "라온 탄탄가든", "menu": "탄탄면", "category": "중식", "price": 11500, "capacity": 80, "waiting": 7, "distance": 110, "rating": 4.3, "spicy": 2, "purpose": ["친목", "회식"]}, {"name": "담온 제육비스트로", "menu": "제육볶음", "category": "한식", "price": 11000, "capacity": 30, "waiting": 7, "distance": 669, "rating": 4.8, "spicy": 2, "purpose": ["친목"]}, {"name": "골목 라멘플레이트", "menu": "라멘", "category": "일식", "price": 12000, "capacity": 16, "waiting": 28, "distance": 422, "rating": 4.1, "spicy": 1, "purpose": ["친목"]}, {"name": "고운 돈까다이닝", "menu": "돈까스", "category": "일식", "price": 11500, "capacity": 40, "waiting": 14, "distance": 683, "rating": 4.6, "spicy": 0, "purpose": ["친목", "회식"]}, {"name": "한끼 짜장부엌", "menu": "짜장면", "category": "중식", "price": 7000, "capacity": 30, "waiting": 16, "distance": 743, "rating": 4.3, "spicy": 0, "purpose": ["혼밥", "친목"]}, {"name": "라온 제육코너", "menu": "제육볶음", "category": "한식", "price": 11000, "capacity": 40, "waiting": 4, "distance": 144, "rating": 4.5, "spicy": 2, "purpose": ["친목", "회식"]}, {"name": "정성 라멘키친", "menu": "라멘", "category": "일식", "price": 12000, "capacity": 40, "waiting": 16, "distance": 1017, "rating": 4.3, "spicy": 1, "purpose": ["친목", "회식"]}, {"name": "오월 카레식당", "menu": "카레", "category": "일식", "price": 11000, "capacity": 12, "waiting": 5, "distance": 252, "rating": 3.9, "spicy": 1, "purpose": ["혼밥", "친목"]}, {"name": "고운 햄버코너", "menu": "햄버거", "category": "양식", "price": 9000, "capacity": 24, "waiting": 7, "distance": 576, "rating": 4.9, "spicy": 0, "purpose": ["혼밥", "친목"]}, {"name": "푸른 돈까가든", "menu": "돈까스", "category": "일식", "price": 13000, "capacity": 12, "waiting": 26, "distance": 801, "rating": 5.0, "spicy": 0, "purpose": ["친목"]}, {"name": "도담 햄버코너", "menu": "햄버거", "category": "양식", "price": 10000, "capacity": 12, "waiting": 11, "distance": 906, "rating": 4.2, "spicy": 0, "purpose": ["혼밥", "친목"]}, {"name": "오월 순두코너", "menu": "순두부찌개", "category": "한식", "price": 10500, "capacity": 30, "waiting": 26, "distance": 1118, "rating": 4.4, "spicy": 2, "purpose": ["친목"]}, {"name": "오월 유산식당", "menu": "유산슬덮밥", "category": "중식", "price": 13500, "capacity": 80, "waiting": 8, "distance": 168, "rating": 4.3, "spicy": 0, "purpose": ["친목", "회식"]}, {"name": "오월 냉면부엌", "menu": "냉면", "category": "한식", "price": 11000, "capacity": 80, "waiting": 23, "distance": 913, "rating": 4.0, "spicy": 0, "purpose": ["친목", "회식"]}, {"name": "정성 돈까비스트로", "menu": "돈까스", "category": "일식", "price": 11000, "capacity": 80, "waiting": 3, "distance": 205, "rating": 4.7, "spicy": 0, "purpose": ["친목", "회식"]}, {"name": "정성 리조밥집", "menu": "리조또", "category": "양식", "price": 13000, "capacity": 20, "waiting": 24, "distance": 767, "rating": 4.3, "spicy": 0, "purpose": ["친목"]}, {"name": "골목 갈비부엌", "menu": "갈비탕", "category": "한식", "price": 14000, "capacity": 12, "waiting": 19, "distance": 197, "rating": 4.7, "spicy": 0, "purpose": ["친목", "미팅"]}, {"name": "한끼 돈까플레이트", "menu": "돈까스", "category": "일식", "price": 11500, "capacity": 24, "waiting": 26, "distance": 447, "rating": 4.1, "spicy": 0, "purpose": ["친목"]}, {"name": "온담 쫄면부엌", "menu": "쫄면", "category": "분식", "price": 8000, "capacity": 20, "waiting": 15, "distance": 982, "rating": 4.1, "spicy": 2, "purpose": ["혼밥"]}, {"name": "행복한 짬뽕스토리", "menu": "짬뽕", "category": "중식", "price": 10000, "capacity": 80, "waiting": 7, "distance": 1014, "rating": 4.4, "spicy": 3, "purpose": ["친목", "회식"]}, {"name": "하루 스테면옥", "menu": "스테이크", "category": "양식", "price": 24000, "capacity": 40, "waiting": 20, "distance": 813, "rating": 4.0, "spicy": 0, "purpose": ["회식"]}, {"name": "온담 갈비코너", "menu": "갈비탕", "category": "한식", "price": 15000, "capacity": 40, "waiting": 12, "distance": 182, "rating": 4.2, "spicy": 0, "purpose": ["친목", "회식"]}, {"name": "하루 불고식당", "menu": "불고기", "category": "한식", "price": 14000, "capacity": 80, "waiting": 17, "distance": 399, "rating": 4.3, "spicy": 0, "purpose": ["친목", "회식"]}, {"name": "오월 포케가든", "menu": "포케", "category": "샐러드", "price": 13000, "capacity": 40, "waiting": 16, "distance": 1183, "rating": 4.6, "spicy": 0, "purpose": ["혼밥", "친목"]}, {"name": "골목 라멘면옥", "menu": "라멘", "category": "일식", "price": 11000, "capacity": 40, "waiting": 18, "distance": 126, "rating": 3.9, "spicy": 1, "purpose": ["친목", "회식"]}, {"name": "별미 라볶키친", "menu": "라볶이", "category": "분식", "price": 7000, "capacity": 16, "waiting": 5, "distance": 521, "rating": 4.9, "spicy": 4, "purpose": ["혼밥", "친목"]}, {"name": "정성 제육비스트로", "menu": "제육볶음", "category": "한식", "price": 10000, "capacity": 16, "waiting": 9, "distance": 1165, "rating": 4.2, "spicy": 2, "purpose": ["혼밥", "친목"]}, {"name": "라온 떡볶포차", "menu": "떡볶이", "category": "분식", "price": 5000, "capacity": 80, "waiting": 25, "distance": 217, "rating": 4.5, "spicy": 4, "purpose": ["혼밥", "친목"]}, {"name": "풍년 짜조다이닝", "menu": "짜조", "category": "베트남", "price": 8000, "capacity": 60, "waiting": 27, "distance": 1024, "rating": 4.8, "spicy": 0, "purpose": ["혼밥", "친목"]}, {"name": "라온 햄버밥집", "menu": "햄버거", "category": "양식", "price": 13500, "capacity": 24, "waiting": 21, "distance": 713, "rating": 5.0, "spicy": 0, "purpose": ["친목"]}, {"name": "온담 카레플레이트", "menu": "카레", "category": "일식", "price": 11000, "capacity": 12, "waiting": 16, "distance": 585, "rating": 3.8, "spicy": 1, "purpose": ["친목"]}, {"name": "고운 볶음다이닝", "menu": "볶음밥", "category": "중식", "price": 9000, "capacity": 40, "waiting": 17, "distance": 1078, "rating": 4.2, "spicy": 0, "purpose": ["혼밥", "친목"]}, {"name": "라온 탄탄면옥", "menu": "탄탄면", "category": "중식", "price": 10000, "capacity": 12, "waiting": 8, "distance": 337, "rating": 4.9, "spicy": 2, "purpose": ["혼밥", "친목"]}, {"name": "풍년 순대식당", "menu": "순대", "category": "분식", "price": 8000, "capacity": 30, "waiting": 17, "distance": 191, "rating": 4.8, "spicy": 1, "purpose": ["혼밥", "친목"]}, {"name": "온담 돈까부엌", "menu": "돈까스", "category": "일식", "price": 11500, "capacity": 24, "waiting": 17, "distance": 1174, "rating": 4.7, "spicy": 0, "purpose": ["친목"]}, {"name": "하루 냉면포차", "menu": "냉면", "category": "한식", "price": 11000, "capacity": 24, "waiting": 4, "distance": 868, "rating": 3.9, "spicy": 0, "purpose": ["혼밥", "친목"]}, {"name": "행복한 파스다이닝", "menu": "파스타", "category": "양식", "price": 12000, "capacity": 40, "waiting": 14, "distance": 133, "rating": 4.0, "spicy": 0, "purpose": ["친목", "회식"]}, {"name": "담백한 짜조다이닝", "menu": "짜조", "category": "베트남", "price": 7000, "capacity": 24, "waiting": 14, "distance": 503, "rating": 4.2, "spicy": 0, "purpose": ["혼밥", "친목"]}, {"name": "담온 짜조스토리", "menu": "짜조", "category": "베트남", "price": 5500, "capacity": 12, "waiting": 16, "distance": 905, "rating": 4.3, "spicy": 0, "purpose": ["혼밥", "친목"]}, {"name": "한끼 반미밥집", "menu": "반미", "category": "베트남", "price": 9000, "capacity": 24, "waiting": 17, "distance": 1043, "rating": 4.5, "spicy": 1, "purpose": ["혼밥", "친목"]}, {"name": "푸른 불고밥집", "menu": "불고기", "category": "한식", "price": 13500, "capacity": 60, "waiting": 26, "distance": 1131, "rating": 3.9, "spicy": 0, "purpose": ["친목", "회식"]}, {"name": "행복한 반미스토리", "menu": "반미", "category": "베트남", "price": 9000, "capacity": 80, "waiting": 9, "distance": 416, "rating": 4.2, "spicy": 1, "purpose": ["혼밥", "친목"]}, {"name": "미소 갈비면옥", "menu": "갈비탕", "category": "한식", "price": 15000, "capacity": 80, "waiting": 15, "distance": 122, "rating": 4.0, "spicy": 0, "purpose": ["친목", "회식"]}, {"name": "행복한 떡볶스토리", "menu": "떡볶이", "category": "분식", "price": 5000, "capacity": 12, "waiting": 9, "distance": 778, "rating": 4.4, "spicy": 4, "purpose": ["혼밥", "친목"]}, {"name": "별미 순대가든", "menu": "순대", "category": "분식", "price": 8000, "capacity": 60, "waiting": 3, "distance": 1182, "rating": 4.3, "spicy": 1, "purpose": ["혼밥", "친목"]}, {"name": "도담 비빔스토리", "menu": "비빔밥", "category": "한식", "price": 10000, "capacity": 20, "waiting": 21, "distance": 960, "rating": 4.9, "spicy": 1, "purpose": ["친목"]}, {"name": "담온 피자식당", "menu": "피자", "category": "양식", "price": 16000, "capacity": 80, "waiting": 21, "distance": 1112, "rating": 4.0, "spicy": 0, "purpose": ["회식"]}, {"name": "라온 규동키친", "menu": "규동", "category": "일식", "price": 9000, "capacity": 24, "waiting": 14, "distance": 578, "rating": 4.8, "spicy": 0, "purpose": ["혼밥", "친목"]}, {"name": "정성 연어면옥", "menu": "연어샐러드", "category": "샐러드", "price": 14000, "capacity": 12, "waiting": 5, "distance": 693, "rating": 4.7, "spicy": 0, "purpose": ["혼밥", "친목"]}, {"name": "하루 짜장테이블", "menu": "짜장면", "category": "중식", "price": 8000, "capacity": 80, "waiting": 18, "distance": 89, "rating": 4.1, "spicy": 0, "purpose": ["혼밥", "친목"]}, {"name": "담백한 김밥플레이트", "menu": "김밥", "category": "분식", "price": 6000, "capacity": 60, "waiting": 22, "distance": 894, "rating": 4.3, "spicy": 0, "purpose": ["혼밥", "친목"]}];
 
     // 상태 관리 필터 객체
     let currentFilters = {
@@ -445,21 +426,24 @@
             // 2. 카테고리 필터링
             if(currentFilters.category !== 'all' && r.category !== currentFilters.category) return false;
             
-            // 3. 인원수 수용 가능성 필터링
+            // 3. 인원수 수용 가능성 필터링 (최대 수용인원 기준)
             if(currentFilters.people !== 'all') {
-                const p = parseInt(currentFilters.people);
-                if(p === 1 && r.people !== 1) return false;
-                if(p === 2 && r.people !== 2) return false;
-                if(p === 3 && (r.people < 3 || r.people > 4)) return false;
-                if(p === 5 && r.people < 5) return false;
+                const maxCap = r.capacity;
+                if(currentFilters.people === '1-2' && maxCap < 2) return false;
+                if(currentFilters.people === '2-3' && maxCap < 3) return false;
+                if(currentFilters.people === '3-4' && maxCap < 4) return false;
+                if(currentFilters.people === '5-6' && maxCap < 6) return false;
+                if(currentFilters.people === '6over' && maxCap < 6) return false;
             }
             
             // 4. 가격대 필터링
             if(currentFilters.price !== 'all') {
-                if(currentFilters.price === '10000' && r.price > 10000) return false;
-                if(currentFilters.price === '15000' && (r.price < 10000 || r.price > 15000)) return false;
-                if(currentFilters.price === '20000' && (r.price < 15000 || r.price > 20000)) return false;
-                if(currentFilters.price === 'over' && r.price < 20000) return false;
+                const p = r.price;
+                if(currentFilters.price === 'under7' && p >= 7000) return false;
+                if(currentFilters.price === '7to10' && (p < 7000 || p > 10000)) return false;
+                if(currentFilters.price === '10to13' && (p <= 10000 || p > 13000)) return false;
+                if(currentFilters.price === '13to16' && (p <= 13000 || p > 16000)) return false;
+                if(currentFilters.price === 'over16' && p <= 16000) return false;
             }
             return true;
         });
@@ -499,17 +483,24 @@
             else if(idx === 1) rankDecor = "✨ 2";
             else if(idx === 2) rankDecor = "🌙 3";
 
+            // 맵기 표시 아이콘 생성
+            let spicyIcons = '';
+            if(r.spicy > 0) {
+                spicyIcons = '🔥'.repeat(r.spicy);
+            }
+
             card.innerHTML = `
                 <div class="card-rank">${rankDecor}</div>
                 <div class="card-header">
                     <div class="restaurant-name">${r.name}</div>
+                    <div class="restaurant-menu">[대표메뉴] ${r.menu} ${spicyIcons}</div>
                     <div class="restaurant-rating">★ ${r.rating.toFixed(1)}</div>
                 </div>
                 <div class="card-details">
-                    <div class="detail-item"><i class="fa-solid fa-coins"></i> 1인 약 ${r.price.toLocaleString()}원</div>
-                    <div class="detail-item"><i class="fa-solid fa-location-dot"></i> 회사서 ${r.distance}m</div>
-                    <div class="detail-item"><i class="fa-solid fa-hourglass-start"></i> 웨이팅 ${r.waiting}분</div>
-                    <div class="detail-item"><i class="fa-solid fa-users"></i> 최적 ${r.people}인 기준</div>
+                    <div class="detail-item"><i class="fa-solid fa-coins"></i> 1인 ${r.price.toLocaleString()}원</div>
+                    <div class="detail-item"><i class="fa-solid fa-location-dot"></i> 거리 ${r.distance}m</div>
+                    <div class="detail-item"><i class="fa-solid fa-hourglass-start"></i> 대기 ${r.waiting}분</div>
+                    <div class="detail-item"><i class="fa-solid fa-users"></i> 최대 ${r.capacity}명 수용</div>
                 </div>
                 <div class="card-footer">
                     <span class="tag">${r.category}</span>
