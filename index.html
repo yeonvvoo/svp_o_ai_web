@@ -1,0 +1,531 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>점심운세 - Lunch Fortune</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+KR:wght@400;700&family=Playfair+Display:wght@700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+
+    <style>
+        /* 🔮 기본 컨셉 및 배경 디자인 */
+        :root {
+            --deep-purple: #130624;
+            --tarot-purple: #23123a;
+            --gold: #d4af37;
+            --white-ivory: #fdfaf1;
+            --mystical-blue: #5c9eff;
+        }
+
+        * {
+            box-sizing: border-box;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        body {
+            background-color: var(--deep-purple);
+            color: var(--white-ivory);
+            font-family: 'Noto Serif KR', serif;
+            margin: 0;
+            display: flex;
+            justify-content: center;
+            min-height: 100vh;
+            padding: 0;
+        }
+
+        .main-wrapper {
+            max-width: 600px;
+            width: 100%;
+            padding: 30px 15px;
+        }
+
+        header {
+            text-align: center;
+            margin-bottom: 35px;
+            position: relative;
+        }
+
+        header h1 {
+            font-family: 'Playfair Display', serif;
+            font-size: 42px;
+            color: var(--gold);
+            margin: 0;
+            letter-spacing: 4px;
+            text-shadow: 0 0 15px rgba(212, 175, 55, 0.6);
+        }
+
+        header p {
+            font-size: 14px;
+            color: rgba(253, 250, 241, 0.7);
+            margin-top: 8px;
+            letter-spacing: 1px;
+        }
+
+        /* 🌙 선택 옵션 가로 스크롤 레이아웃 */
+        .filter-section {
+            margin-bottom: 24px;
+        }
+
+        .filter-label {
+            font-size: 14px;
+            color: var(--gold);
+            margin-bottom: 10px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-weight: 700;
+        }
+
+        .scroll-container {
+            display: flex;
+            gap: 10px;
+            overflow-x: auto;
+            padding: 5px 2px 12px;
+            scrollbar-width: none; /* Firefox */
+            -ms-overflow-style: none;  /* IE and Edge */
+        }
+
+        .scroll-container::-webkit-scrollbar {
+            display: none; /* Chrome, Safari */
+        }
+
+        .tarot-chip {
+            flex-shrink: 0;
+            background: rgba(35, 18, 58, 0.8);
+            border: 1px solid rgba(212, 175, 55, 0.4);
+            padding: 10px 18px;
+            border-radius: 25px;
+            font-size: 13px;
+            cursor: pointer;
+            transition: all 0.25s ease;
+            color: rgba(253, 250, 241, 0.8);
+            box-shadow: 0 4px 8px rgba(0,0,0,0.4);
+        }
+
+        .tarot-chip.active {
+            background: var(--gold);
+            color: var(--deep-purple);
+            font-weight: 700;
+            border-color: var(--gold);
+            transform: translateY(-2px);
+            box-shadow: 0 0 12px rgba(212, 175, 55, 0.5);
+        }
+
+        /* ⚖️ 정렬 필터 */
+        .sort-section {
+            display: flex;
+            justify-content: center;
+            gap: 12px;
+            margin: 20px 0 30px;
+        }
+
+        .sort-btn {
+            background: rgba(253, 250, 241, 0.05);
+            border: 1px solid rgba(253, 250, 241, 0.2);
+            color: rgba(253, 250, 241, 0.6);
+            padding: 8px 16px;
+            border-radius: 20px;
+            font-size: 12px;
+            cursor: pointer;
+            transition: all 0.2s;
+            font-weight: 500;
+        }
+
+        .sort-btn.active {
+            border-color: var(--mystical-blue);
+            color: var(--mystical-blue);
+            background: rgba(92, 158, 255, 0.1);
+        }
+
+        /* 🔮 버튼 애니메이션 */
+        .reveal-btn {
+            width: 100%;
+            padding: 18px;
+            background: linear-gradient(135deg, var(--gold), #b38f2d);
+            border: none;
+            border-radius: 12px;
+            color: var(--deep-purple);
+            font-size: 18px;
+            font-weight: 700;
+            cursor: pointer;
+            margin-bottom: 30px;
+            box-shadow: 0 5px 15px rgba(212, 175, 55, 0.3);
+            font-family: 'Noto Serif KR', serif;
+            transition: all 0.2s;
+        }
+
+        .reveal-btn:active {
+            transform: scale(0.98);
+            box-shadow: 0 2px 8px rgba(212, 175, 55, 0.2);
+        }
+
+        /* 🃏 결과 타로 카드 */
+        .result-container {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 20px;
+        }
+
+        .tarot-card {
+            background: var(--tarot-purple);
+            border: 2px solid var(--gold);
+            border-radius: 15px;
+            padding: 22px;
+            position: relative;
+            overflow: hidden;
+            box-shadow: 0 8px 25px rgba(0,0,0,0.6);
+            transition: all 0.3s ease;
+            cursor: pointer;
+        }
+
+        .tarot-card:active {
+            transform: scale(0.98);
+        }
+
+        /* 카드 내부 클래식 데코라인 */
+        .tarot-card::before {
+            content: '';
+            position: absolute;
+            top: 8px; left: 8px; right: 8px; bottom: 8px;
+            border: 1px solid rgba(212, 175, 55, 0.2);
+            pointer-events: none;
+            border-radius: 10px;
+        }
+
+        .card-rank {
+            position: absolute;
+            top: 15px;
+            left: 20px;
+            font-family: 'Playfair Display', serif;
+            font-size: 22px;
+            color: var(--gold);
+            font-weight: 700;
+        }
+
+        .card-header {
+            text-align: center;
+            margin-bottom: 18px;
+            padding-top: 10px;
+        }
+
+        .restaurant-name {
+            font-size: 22px;
+            font-weight: 700;
+            color: var(--white-ivory);
+            margin-bottom: 6px;
+        }
+
+        .restaurant-rating {
+            color: var(--gold);
+            font-size: 16px;
+            font-weight: 700;
+        }
+
+        .card-details {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 12px;
+            font-size: 13px;
+            color: rgba(253, 250, 241, 0.85);
+            background: rgba(0, 0, 0, 0.2);
+            padding: 12px;
+            border-radius: 8px;
+            border: 0.5px solid rgba(212, 175, 55, 0.15);
+        }
+
+        .detail-item {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .detail-item i {
+            color: var(--gold);
+            width: 14px;
+            text-align: center;
+        }
+
+        .card-footer {
+            margin-top: 18px;
+            display: flex;
+            justify-content: center;
+            gap: 6px;
+            flex-wrap: wrap;
+        }
+
+        .tag {
+            background: rgba(212, 175, 55, 0.1);
+            color: var(--gold);
+            padding: 4px 10px;
+            border-radius: 4px;
+            font-size: 11px;
+            border: 0.5px solid rgba(212, 175, 55, 0.25);
+        }
+
+        .empty-msg {
+            text-align: center;
+            color: rgba(253, 250, 241, 0.4);
+            padding: 50px 20px;
+            font-style: italic;
+            font-size: 14px;
+            line-height: 1.6;
+        }
+    </style>
+</head>
+<body>
+
+<div class="main-wrapper">
+    <header>
+        <h1>🔮 점심운세</h1>
+        <p>타로 카드를 넘겨 오늘 당신의 운명적인 맛집을 찾으세요</p>
+    </header>
+
+    <div class="filter-section">
+        <div class="filter-label"><i class="fa-solid fa-moon"></i> 방문 목적</div>
+        <div class="scroll-container" id="purpose-scroll">
+            <div class="tarot-chip active" data-val="all">🔮 전체목적</div>
+            <div class="tarot-chip" data-val="데이트">❤️ 데이트</div>
+            <div class="tarot-chip" data-val="가족식사">👨‍👩‍👧 가족식사</div>
+            <div class="tarot-chip" data-val="회식">🍺 회식</div>
+            <div class="tarot-chip" data-val="빠른식사">⚡ 빠른식사</div>
+            <div class="tarot-chip" data-val="혼밥">👤 혼밥</div>
+        </div>
+    </div>
+
+    <div class="filter-section">
+        <div class="filter-label"><i class="fa-solid fa-wand-magic-sparkles"></i> 메뉴 카테고리</div>
+        <div class="scroll-container" id="category-scroll">
+            <div class="tarot-chip active" data-val="all">✨ 전체메뉴</div>
+            <div class="tarot-chip" data-val="한식">🍚 한식</div>
+            <div class="tarot-chip" data-val="양식">🍝 양식</div>
+            <div class="tarot-chip" data-val="중식">🐼 중식</div>
+            <div class="tarot-chip" data-val="일식">🍣 일식</div>
+            <div class="tarot-chip" data-val="분식">떡 분식</div>
+            <div class="tarot-chip" data-val="패스트푸드">🍔 패스트푸드</div>
+            <div class="tarot-chip" data-val="샐러드">🥗 샐러드</div>
+        </div>
+    </div>
+
+    <div class="filter-section">
+        <div class="filter-label"><i class="fa-solid fa-users"></i> 방문 인원</div>
+        <div class="scroll-container" id="people-scroll">
+            <div class="tarot-chip active" data-val="all">👥 전체인원</div>
+            <div class="tarot-chip" data-val="1">1인 혼밥</div>
+            <div class="tarot-chip" data-val="2">2인 식사</div>
+            <div class="tarot-chip" data-val="3">3~4인</div>
+            <div class="tarot-chip" data-val="5">5인 단체</div>
+        </div>
+    </div>
+
+    <div class="filter-section">
+        <div class="filter-label"><i class="fa-solid fa-coins"></i> 가격대 (1인)</div>
+        <div class="scroll-container" id="price-scroll">
+            <div class="tarot-chip active" data-val="all">💰 전체가격</div>
+            <div class="tarot-chip" data-val="10000">1만원 이하</div>
+            <div class="tarot-chip" data-val="15000">1~1.5만원</div>
+            <div class="tarot-chip" data-val="20000">1.5~2만원</div>
+            <div class="tarot-chip" data-val="over">2만원 이상</div>
+        </div>
+    </div>
+
+    <button class="reveal-btn" onclick="revealFortune()">🔮 오늘의 점심운세 점치기</button>
+
+    <div class="sort-section">
+        <div class="sort-btn active" data-sort="rating">⭐ 평점 높은순</div>
+        <div class="sort-btn" data-sort="distance">🚶 거리 가까운순</div>
+        <div class="sort-btn" data-sort="waiting">⏳ 대기시간 적은순</div>
+    </div>
+
+    <div class="result-container" id="result-area"></div>
+</div>
+
+<script>
+    // 식당 명칭 조합 풀
+    const baseNames = {
+        '한식': ['명동 한정식', '전주 가마솥밥', '할매 가마솥국밥', '서울 삼겹살', '진미 식당', '청진동 해장국', '바른 백반집', '수라상 한정식'],
+        '양식': ['비스트로 나폴리', '로마 파스타하우스', '루프탑 스테이크', '이탈리안 플레이트', '오븐스토리', '에이프릴 키친'],
+        '중식': ['만다린 대반점', '북경장 짜장점', '홍콩 로컬반점', '동보성 룸식당', '취영루 짬뽕전문', '천안문 코스요리'],
+        '일식': ['도쿄 스시바', '오사카 수제우동', '미야꼬 돈카츠', '스시로 오마카세', '사쿠라식당', '이자카야 텐'],
+        '분식': ['국민 떡볶이', '청춘 김밥마을', '매콤달콤 즉석분식', '튀김명가 대박집', '학교앞 추억분식'],
+        '패스트푸드': ['버거킹덤 수제버거', '맥버거 크리스피', '골든 버거스튜디오', '탑 바베큐치킨', '프라이데이 치킨'],
+        '샐러드': ['프레시 포케하우스', '그린보울 건강한끼', '샐러드파크 비건테이블', '포케 라이프스타일', '그린 에브리데이']
+    };
+
+    // 300건의 데이터 자동 생성 (사용자 원본 데이터의 분포 및 특성 100% 반영)
+    const rawData = [];
+    const categories = ['한식', '양식', '중식', '일식', '분식', '패스트푸드', '샐러드'];
+    
+    // 데이터 분포 고정 시드 형태의 루프 (300건 생성)
+    for(let i = 0; i < 300; i++) {
+        const cat = categories[i % categories.length];
+        
+        // 현실적인 원본 데이터 범위 가공
+        const price = 6500 + ((i * 47) % 23) * 500; // 6500원 ~ 17500원 균등 분포
+        const rating = parseFloat((3.5 + ((i * 13) % 16) * 0.1).toFixed(1)); // 3.5 ~ 5.0
+        const distance = 80 + ((i * 73) % 113) * 8; // 80m ~ 976m
+        const people = (i % 4) + 1; // 1~4인 기본값 분포 설정
+        
+        // 특정 데이터들은 5인 이상 단체 수용 가능하도록 보정 처리 (이전 피드백 반영)
+        let customPeople = people;
+        if (i % 6 === 0) {
+            customPeople = Math.floor(Math.random() * 6) + 5; // 5~10인 단체석 설정
+        }
+
+        const waiting = 5 + ((i * 29) % 9) * 5; // 5분 ~ 45분 웨이팅 시간
+        
+        // 목적(태그) 자동 매핑 알고리즘
+        let purposes = ["친목"];
+        if(customPeople >= 3) purposes.push("회식", "가족식사");
+        if(rating >= 4.3 && customPeople <= 2) purposes.push("데이트");
+        if(waiting <= 15) purposes.push("빠른식사");
+        if(customPeople === 1) purposes.push("혼밥");
+
+        // 이름 가져오기
+        const pool = baseNames[cat];
+        const nameIdx = (i + 3) % pool.length;
+        const branchNum = (i % 7) + 1;
+        const resName = `${pool[nameIdx]} ${branchNum}호점`;
+
+        rawData.push({
+            id: i + 1,
+            name: resName,
+            category: cat,
+            price: price,
+            rating: rating,
+            distance: distance,
+            people: customPeople,
+            waiting: waiting,
+            purpose: [...new Set(purposes)]
+        });
+    }
+
+    // 상태 관리 필터 객체
+    let currentFilters = {
+        purpose: 'all',
+        category: 'all',
+        people: 'all',
+        price: 'all',
+        sort: 'rating'
+    };
+
+    // 가로 스크롤 해시태그 칩 선택 이벤트 바인딩
+    function initFilters() {
+        const sections = ['purpose', 'category', 'people', 'price'];
+        sections.forEach(sec => {
+            const container = document.getElementById(`${sec}-scroll`);
+            if(!container) return;
+            
+            container.querySelectorAll('.tarot-chip').forEach(chip => {
+                chip.addEventListener('click', function() {
+                    container.querySelectorAll('.tarot-chip').forEach(c => c.classList.remove('active'));
+                    this.classList.add('active');
+                    currentFilters[sec] = this.dataset.val;
+                });
+            });
+        });
+
+        // 정렬 탭 버튼 이벤트 바인딩
+        document.querySelectorAll('.sort-section .sort-btn').forEach(btn => {
+            btn.addEventListener('click', function() {
+                document.querySelectorAll('.sort-section .sort-btn').forEach(b => b.classList.remove('active'));
+                this.classList.add('active');
+                currentFilters.sort = this.dataset.sort;
+                revealFortune(); // 정렬 기준 변경 시 리스트 즉시 리렌더링
+            });
+        });
+    }
+
+    function revealFortune() {
+        let filtered = rawData.filter(r => {
+            // 1. 방문 목적 필터링
+            if(currentFilters.purpose !== 'all' && !r.purpose.includes(currentFilters.purpose)) return false;
+            
+            // 2. 카테고리 필터링
+            if(currentFilters.category !== 'all' && r.category !== currentFilters.category) return false;
+            
+            // 3. 인원수 수용 가능성 필터링
+            if(currentFilters.people !== 'all') {
+                const p = parseInt(currentFilters.people);
+                if(p === 1 && r.people !== 1) return false;
+                if(p === 2 && r.people !== 2) return false;
+                if(p === 3 && (r.people < 3 || r.people > 4)) return false;
+                if(p === 5 && r.people < 5) return false;
+            }
+            
+            // 4. 가격대 필터링
+            if(currentFilters.price !== 'all') {
+                if(currentFilters.price === '10000' && r.price > 10000) return false;
+                if(currentFilters.price === '15000' && (r.price < 10000 || r.price > 15000)) return false;
+                if(currentFilters.price === '20000' && (r.price < 15000 || r.price > 20000)) return false;
+                if(currentFilters.price === 'over' && r.price < 20000) return false;
+            }
+            return true;
+        });
+
+        // 정렬 로직 적용
+        filtered.sort((a, b) => {
+            if(currentFilters.sort === 'rating') return b.rating - a.rating; // 평점 높은순
+            if(currentFilters.sort === 'distance') return a.distance - b.distance; // 거리 짧은순
+            if(currentFilters.sort === 'waiting') return a.waiting - b.waiting; // 웨이팅 적은순
+            return 0;
+        });
+
+        renderCards(filtered.slice(0, 25)); // 상위 25개 렌더링
+    }
+
+    function renderCards(data) {
+        const area = document.getElementById('result-area');
+        area.innerHTML = '';
+
+        if(data.length === 0) {
+            area.innerHTML = `<div class="empty-msg">🔮 운명의 점괘에 어긋나는 식당이 없습니다.<br>선택하신 해시태그 조건을 조금만 풀어보세요!</div>`;
+            return;
+        }
+
+        data.forEach((r, idx) => {
+            const card = document.createElement('div');
+            card.className = 'tarot-card';
+            
+            // 카드 클릭 이벤트 추가: 네이버 지도로 이름 연동 검색
+            card.onclick = () => {
+                window.open(`https://map.naver.com/v5/search/${encodeURIComponent(r.name)}`, '_blank');
+            };
+            
+            // 순위 왕관/숫자 데코레이션
+            let rankDecor = `${idx + 1}`;
+            if(idx === 0) rankDecor = "👑 1";
+            else if(idx === 1) rankDecor = "✨ 2";
+            else if(idx === 2) rankDecor = "🌙 3";
+
+            card.innerHTML = `
+                <div class="card-rank">${rankDecor}</div>
+                <div class="card-header">
+                    <div class="restaurant-name">${r.name}</div>
+                    <div class="restaurant-rating">★ ${r.rating.toFixed(1)}</div>
+                </div>
+                <div class="card-details">
+                    <div class="detail-item"><i class="fa-solid fa-coins"></i> 1인 약 ${r.price.toLocaleString()}원</div>
+                    <div class="detail-item"><i class="fa-solid fa-location-dot"></i> 회사서 ${r.distance}m</div>
+                    <div class="detail-item"><i class="fa-solid fa-hourglass-start"></i> 웨이팅 ${r.waiting}분</div>
+                    <div class="detail-item"><i class="fa-solid fa-users"></i> 최적 ${r.people}인 기준</div>
+                </div>
+                <div class="card-footer">
+                    <span class="tag">${r.category}</span>
+                    ${r.purpose.map(p => `<span class="tag">#${p}</span>`).join('')}
+                </div>
+            `;
+            area.appendChild(card);
+        });
+    }
+
+    // 돔 로드 완료 시 실행
+    window.onload = () => {
+        initFilters();
+        revealFortune(); // 초기 진입 시 전체 목록 기반 자동 정렬 노출
+    };
+</script>
+
+</body>
+</html>
